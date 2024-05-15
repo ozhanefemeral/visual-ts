@@ -1,5 +1,5 @@
 {
-  "name": "deneme",
+  "name": "visual-ts",
   "private": true,
   "scripts": {
     "build": "turbo build",
