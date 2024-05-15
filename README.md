@@ -1,81 +1,62 @@
-# Turborepo starter
+# VisualTS
 
-This is an official starter Turborepo.
+Develop TypeScript / React apps with drag & drop!
 
-## Using this example
+![code-generator](https://github.com/ozhanefemeral/visual-ts/assets/22786810/2939341e-8a37-428a-80aa-a76c35c3a1b5)
 
-Run the following command:
+## Overview
 
-```sh
-npx create-turbo@latest
-```
+The VisualTS tool allows you to visualize the structure and contents of TypeScript files and React components. It aims to provide a user-friendly interface for developers to explore and understand the codebase they're working with.
 
-## What's inside?
+![image](https://github.com/ozhanefemeral/visual-ts/assets/22786810/d288b080-ce05-405e-b9c1-2d112dc5ba04)
 
-This Turborepo includes the following packages/apps:
+## Key Features
 
-### Apps and Packages
+- **Drag-and-drop Code Generation**: By simply dragging and dropping funcitons declared in your codebase; you can build custom functions.
+- **Parsing TypeScript Files**: The tool can parse TypeScript files and extract information about the functions, variables and relationships.
+- **Visualizing TypeScript Modules**: The parsed information is presented in a visual format, making it easier to understand the structure and dependencies of TypeScript modules.
+- **Visualizing React Components**: The tool can also parse and visualize React components, showing the component hierarchy and the props/state relationships.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+## Apps and Packages
+
+Right now, each utility, parsing and code generation is done in Next.js App. The goal is to separate them into different packages.
+
+- `next`: [Next.js](https://nextjs.org/) app
+- `@repo/ui`: component library to use within the monorepo
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/) (and plan to stay that way).
 
-### Utilities
+## Build
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+To build all apps and packages, run the following command (in the root of the monorepo):
 
 ```
-cd my-turborepo
-pnpm build
+bun build
 ```
 
-### Develop
+## Getting Started
 
-To develop all apps and packages, run the following command:
+1. Clone the repository: `git clone https://github.com/ozhanefemeral/visual-ts`
+2. Install dependencies: `bun install`
 
-```
-cd my-turborepo
-pnpm dev
-```
+3. Start the development server: `bun dev`
+4. Open the application in your browser at `http://localhost:3000`
 
-### Remote Caching
+   p.s. You can use npm, yarn and pnpm too
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## Usage
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+1. Create a file, with `.ts` or `.tsx` extension. It supports only these file types _for now_.
+2. In `app/page.tsx` render it using `<FileParser />` component. There is an example left out in app/page.tsx.
 
-```
-cd my-turborepo
-npx turbo login
-```
+## Roadmap
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+<!-- Text -Check it out- with navigating to https://visual-ts.vercel.app/roadmap -->
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+[Check it out](https://visual-ts.vercel.app/roadmap)
 
-```
-npx turbo link
-```
+## Contributing
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+Any contribution is welcomed! Feel free to contact me or open an issue.
