@@ -17,7 +17,7 @@ export function getFileName(filePath: string): string {
 
 export function updateStateVariables(line: string, stateVariables: string[]) {
   const stateMatch = line.match(/const \[(.*?)\] = useState<(\w+)>\((\w+)\)/);
-  if (stateMatch && stateMatch[1]) {
+  if (stateMatch) {
     stateVariables.push(stateMatch[1]);
   }
 }
@@ -119,22 +119,22 @@ export function updateComponentFunctions(
   const asyncArrowFunctionMatch = line.match(/const (\w+) = async \(\) =>/);
   const asyncNamedFunctionMatch = line.match(/async function (\w+)/);
 
-  if (arrowFunctionMatch && arrowFunctionMatch[1]) {
+  if (arrowFunctionMatch) {
     functions.push({
       name: arrowFunctionMatch[1],
       returnType: "void",
     });
-  } else if (namedFunctionMatch && namedFunctionMatch[1]) {
+  } else if (namedFunctionMatch) {
     functions.push({
       name: namedFunctionMatch[1],
       returnType: "void",
     });
-  } else if (asyncArrowFunctionMatch && asyncArrowFunctionMatch[1]) {
+  } else if (asyncArrowFunctionMatch) {
     functions.push({
       name: asyncArrowFunctionMatch[1],
       returnType: "Promise<void>",
     });
-  } else if (asyncNamedFunctionMatch && asyncNamedFunctionMatch[1]) {
+  } else if (asyncNamedFunctionMatch) {
     functions.push({
       name: asyncNamedFunctionMatch[1],
       returnType: "Promise<void>",
@@ -158,19 +158,16 @@ export function updateButtons(
   if (buttonMatch) {
     const lineIndex = lines.indexOf(line);
     const buttonLabel = lines[lineIndex + 1];
-
-    if (buttonLabel && buttonMatch[2]) {
-      buttons.push({
-        label: buttonLabel.trim(),
-        handler: buttonMatch[2],
-      });
-    }
+    buttons.push({
+      label: buttonLabel,
+      handler: buttonMatch[2],
+    });
   }
 }
 
 export function updateInterfaces(line: string, interfaces: string[]) {
   const interfaceMatch = line.match(/interface (\w+)/);
-  if (interfaceMatch && interfaceMatch[1]) {
+  if (interfaceMatch) {
     interfaces.push(interfaceMatch[1]);
   }
 }
