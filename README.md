@@ -19,12 +19,14 @@ The VisualTS tool allows you to visualize the structure and contents of TypeScri
 
 ## Apps and Packages
 
-Right now, each utility, parsing and code generation is done in Next.js App. The goal is to separate them into different packages.
+Right now, code-generation functions and components are inside the Next.js app. Also, React components used for parsing are in the `/next`.
+WIP for moving those to packages.
 
 - `next`: [Next.js](https://nextjs.org/) app
 - `@repo/ui`: component library to use within the monorepo
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `@repo/parser`: functions and types used for parsing throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/) (and plan to stay that way).
 
