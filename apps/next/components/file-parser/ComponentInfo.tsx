@@ -5,7 +5,11 @@ import {
   updateComponentFunctions,
   updateStateVariables,
 } from "@repo/parser";
-import { ComponentInfoFields, FileParserProps, FunctionInfo } from "./types";
+import {
+  ComponentInfoFields,
+  FileParserProps,
+  FunctionInfo,
+} from "@repo/parser";
 
 function getComponentInfo({ filePath }: FileParserProps): ComponentInfoFields {
   const fileContent = readFileContent(filePath);

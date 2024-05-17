@@ -1,7 +1,7 @@
 "use client";
 
 import { CodeViewer } from "../file-parser/CodeViewer";
-import { FunctionInfo } from "../file-parser/types";
+import { FunctionInfo } from "@repo/parser";
 import {
   Popover,
   PopoverContent,

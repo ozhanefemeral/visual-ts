@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FunctionInfo } from "../file-parser/types";
+import { FunctionInfo } from "@repo/parser";
 import { TypeSpan } from "../file-parser/ModuleTypes/TypeBadge";
 import { Separator } from "../ui/separator";
 import { FunctionInfoPopover } from "../shared/FunctionInfoPopover";

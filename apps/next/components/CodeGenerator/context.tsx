@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
-import { FunctionInfo } from "../file-parser/types";
+import { FunctionInfo } from "@repo/parser";
 
 interface Context {
   functions: any[];

@@ -3,7 +3,7 @@
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import { useEffect, useState } from "react";
 import { CodeViewer } from "../file-parser/CodeViewer";
-import { FunctionInfo } from "../file-parser/types";
+import { FunctionInfo } from "@repo/parser";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useCodeGenerator } from "./context";

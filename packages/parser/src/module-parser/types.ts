@@ -11,3 +11,15 @@ export interface VariableInfo {
   name: string;
   type: string;
 }
+
+export interface ModuleInfoFields {
+  fileName: string;
+  interfaces: string[];
+  functions: FunctionInfo[];
+  fileContent: string;
+  usedTypes: string[];
+}
+
+export interface FileParserProps {
+  filePath: string;
+}

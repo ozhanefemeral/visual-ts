@@ -7,8 +7,7 @@ import {
 } from "../ui/card";
 import { ComponentInfo } from "./ComponentInfo";
 import { ModuleInfo } from "./ModuleInfo";
-import { determineFileType, getFileName } from "@repo/parser";
-import { FileParserProps } from "./types";
+import { determineFileType, getFileName, FileParserProps } from "@repo/parser";
 
 export const FileParser: React.FC<FileParserProps> = ({ filePath }) => {
   const fileType = determineFileType(filePath);

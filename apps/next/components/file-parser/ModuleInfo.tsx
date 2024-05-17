@@ -9,7 +9,7 @@ import {
   readFileContent,
   updateInterfaces,
 } from "@repo/parser";
-import { FileParserProps, FunctionInfo, ModuleInfoFields } from "./types";
+import { FileParserProps, FunctionInfo, ModuleInfoFields } from "@repo/parser";
 
 export function getModuleInfo({ filePath }: FileParserProps): ModuleInfoFields {
   const fileContent = readFileContent(filePath);
