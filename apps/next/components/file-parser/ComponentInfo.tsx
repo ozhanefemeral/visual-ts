@@ -4,7 +4,7 @@ import {
   updateButtons,
   updateComponentFunctions,
   updateStateVariables,
-} from "./functions";
+} from "@repo/parser";
 import { ComponentInfoFields, FileParserProps, FunctionInfo } from "./types";
 
 function getComponentInfo({ filePath }: FileParserProps): ComponentInfoFields {

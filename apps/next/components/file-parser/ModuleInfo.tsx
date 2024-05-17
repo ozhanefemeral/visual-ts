@@ -8,7 +8,7 @@ import {
   parseFunctionsFromFile,
   readFileContent,
   updateInterfaces,
-} from "./functions";
+} from "@repo/parser";
 import { FileParserProps, FunctionInfo, ModuleInfoFields } from "./types";
 
 export function getModuleInfo({ filePath }: FileParserProps): ModuleInfoFields {

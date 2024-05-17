@@ -5,7 +5,7 @@ export interface FunctionInfo {
   returnType: string;
   functionCalls?: Map<string, number>;
   parameters?: ParameterInfo[];
-  jsDocComment?: string | NodeArray<JSDocComment>;
+  jsDocComment?: string | undefined;
   variables?: VariableInfo[];
   code?: string;
 }
