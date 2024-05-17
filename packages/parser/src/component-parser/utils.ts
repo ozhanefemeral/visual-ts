@@ -1,4 +1,4 @@
-import { FunctionInfo } from "../module-parser/types";
+import { FunctionInfo } from "@/module-parser/types";
 import { ButtonInfo } from "./types";
 
 export function updateStateVariables(line: string, stateVariables: string[]) {

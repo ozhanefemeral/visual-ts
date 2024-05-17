@@ -1,4 +1,4 @@
-import { FunctionInfo } from "../module-parser/types";
+import { FunctionInfo } from "@/module-parser/types";
 import { readFileContent } from "../utils/file-utils";
 import { createTypeChecker } from "../utils/typescript-utils";
 import { ButtonInfo } from "./types";
