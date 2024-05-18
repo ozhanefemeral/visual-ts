@@ -11,5 +11,11 @@
   "license": "ISC",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "imports": {
+    "#*": [
+      "./src/*.ts",
+      "./src/*.tsx"
+    ]
   }
 }

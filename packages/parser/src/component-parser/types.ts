@@ -1,4 +1,4 @@
-import { FunctionInfo } from "../module-parser/types";
+import { FunctionInfo } from "#module-parser/types";
 export interface ButtonInfo {
   label: string;
   handler: string;
