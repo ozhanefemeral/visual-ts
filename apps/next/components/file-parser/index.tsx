@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ui/card";
 import { ComponentInfo } from "./ComponentInfo";
 import { ModuleInfo } from "./ModuleInfo";
 import { determineFileType, getFileName, FileParserProps } from "@repo/parser";

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Button } from "./ui/button";
+import { Button } from "@ui/button";
 
 export const CounterComponent: React.FC = () => {
   const [count, setCount] = useState<number>(0);

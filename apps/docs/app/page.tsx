@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { Card } from "@repo/ui/card";
-import { Code } from "@repo/ui/code";
+import { Card } from "@ui/card";
+import { Code } from "@ui/code";
 import styles from "./page.module.css";
-import { Button } from "@repo/ui/button";
+import { Button } from "@ui/button";
 
 function Gradient({
   conic,
@@ -78,9 +78,7 @@ export default function Page(): JSX.Element {
         </div>
       </div>
 
-      <Button appName="docs" className={styles.button}>
-        Click me!
-      </Button>
+      <Button className={styles.button}>Click me!</Button>
 
       <div className={styles.hero}>
         <div className={styles.heroContent}>
@@ -134,8 +132,9 @@ export default function Page(): JSX.Element {
 
       <div className={styles.grid}>
         {LINKS.map(({ title, href, description }) => (
-          <Card className={styles.card} href={href} key={title} title={title}>
+          <Card className={styles.card} key={title} title={title}>
             {description}
+            {href}
           </Card>
         ))}
       </div>

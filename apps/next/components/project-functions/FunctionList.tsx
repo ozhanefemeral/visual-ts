@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { FunctionInfo } from "@repo/parser";
 import { TypeSpan } from "../file-parser/ModuleTypes/TypeBadge";
-import { Separator } from "../ui/separator";
+import { Separator } from "@ui/separator";
 import { FunctionInfoPopover } from "../shared/FunctionInfoPopover";
 import { useDraggable } from "@dnd-kit/core";
 

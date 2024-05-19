@@ -2,11 +2,7 @@
 
 import { CodeViewer } from "../file-parser/CodeViewer";
 import { FunctionInfo } from "@repo/parser";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 
 export const FunctionInfoPopover: React.FC<{
   func: FunctionInfo;
