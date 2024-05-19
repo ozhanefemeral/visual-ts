@@ -10,12 +10,11 @@
     "./components/*": "./src/*.tsx"
   },
   "scripts": {
+    "ui:add": "bunx shadcn-ui@latest add",
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
     "@turbo/gen": "^1.12.4",
     "@types/node": "^20.11.24",
     "@types/eslint": "^8.56.5",
