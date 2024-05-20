@@ -1,7 +1,8 @@
 "use client";
 
-import { CodeViewer } from "../file-parser/CodeViewer";
-import { FunctionInfo } from "@repo/parser";
+import { CodeViewer } from "@parser/components/file-parser/CodeViewer";
+import { FunctionInfo } from "@parser/module-parser/types";
+
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 
 export const FunctionInfoPopover: React.FC<{

@@ -1,5 +1,5 @@
 import { CodeGenerator } from "@/components/CodeGenerator";
-import { ProjectFunctions } from "@/components/project-functions";
+import { ProjectFunctions } from "@parser/components/project-functions";
 import React from "react";
 
 export default function CodeGeneratorPage() {

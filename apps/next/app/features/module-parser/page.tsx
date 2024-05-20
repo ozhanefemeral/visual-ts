@@ -1,4 +1,4 @@
-import { ModuleInfo } from "@/components/file-parser/ModuleInfo";
+import { ModuleInfo } from "@parser/components/file-parser/ModuleInfo";
 import { Separator } from "@ui/separator";
 
 export default function ModuleParserPage() {

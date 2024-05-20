@@ -1,6 +1,6 @@
 "use client";
 
-import { generateRandomColorFromStr } from "@/lib/utils";
+import { generateRandomColorFromStr } from "@parser/utils/color-utils";
 
 interface TypeBadgeProps {
   type: string;

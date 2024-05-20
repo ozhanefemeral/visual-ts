@@ -4,12 +4,13 @@ import { CodeViewer } from "./CodeViewer";
 import { ModuleTypes } from "./ModuleTypes";
 import { TypeSpan } from "./ModuleTypes/TypeBadge";
 import {
-  getFileName,
-  parseFunctionsFromFile,
-  readFileContent,
-  updateInterfaces,
-} from "@repo/parser";
-import { FileParserProps, FunctionInfo, ModuleInfoFields } from "@repo/parser";
+  FileParserProps,
+  FunctionInfo,
+  ModuleInfoFields,
+} from "@parser/module-parser/types";
+import { updateInterfaces } from "@parser/component-parser/utils";
+import { parseFunctionsFromFile } from "@parser/module-parser";
+import { readFileContent, getFileName } from "@parser/utils/file-utils";
 
 export function getModuleInfo({ filePath }: FileParserProps): ModuleInfoFields {
   const fileContent = readFileContent(filePath);

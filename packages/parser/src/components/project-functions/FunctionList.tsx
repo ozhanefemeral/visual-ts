@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { FunctionInfo } from "@repo/parser";
-import { TypeSpan } from "../file-parser/ModuleTypes/TypeBadge";
+import { TypeSpan } from "@parser/components/file-parser/ModuleTypes/TypeBadge";
 import { Separator } from "@ui/separator";
-import { FunctionInfoPopover } from "../shared/FunctionInfoPopover";
+import { FunctionInfoPopover } from "@parser/components/shared/FunctionInfoPopover";
 import { useDraggable } from "@dnd-kit/core";
+import { FunctionInfo } from "@parser/module-parser/types";
 
 interface FunctionListItemProps {
   func: FunctionInfo;

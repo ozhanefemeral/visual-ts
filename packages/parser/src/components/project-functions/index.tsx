@@ -1,4 +1,4 @@
-import { getModuleInfo } from "../file-parser/ModuleInfo";
+import { getModuleInfo } from "@parser/components/file-parser/ModuleInfo";
 import { FunctionList } from "./FunctionList";
 
 export const ProjectFunctions = () => {

@@ -1,5 +1,5 @@
 "use client";
-import { assignColorsToElements } from "@/lib/utils";
+import { assignColorsToElements } from "@parser/utils/color-utils";
 import { TypeBadge } from "./TypeBadge";
 
 interface ModuleTypesProps {

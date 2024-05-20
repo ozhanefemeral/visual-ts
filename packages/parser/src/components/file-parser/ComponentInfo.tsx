@@ -1,15 +1,11 @@
+import { ComponentInfoFields } from "@/component-parser/types";
 import {
-  getFileName,
-  readFileContent,
   updateButtons,
   updateComponentFunctions,
   updateStateVariables,
-} from "@repo/parser";
-import {
-  ComponentInfoFields,
-  FileParserProps,
-  FunctionInfo,
-} from "@repo/parser";
+} from "@/component-parser/utils";
+import { FileParserProps, FunctionInfo } from "@/module-parser/types";
+import { getFileName, readFileContent } from "@/utils/file-utils";
 
 function getComponentInfo({ filePath }: FileParserProps): ComponentInfoFields {
   const fileContent = readFileContent(filePath);

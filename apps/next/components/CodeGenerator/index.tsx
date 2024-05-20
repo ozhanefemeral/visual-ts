@@ -2,12 +2,11 @@
 
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import { useEffect, useState } from "react";
-import { CodeViewer } from "../file-parser/CodeViewer";
 import { FunctionInfo } from "@repo/parser";
 import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
 import { useCodeGenerator } from "./context";
-
+import { CodeViewer } from "@parser/components/file-parser/CodeViewer";
 export function generateCodeFromFunction(functionInfo: FunctionInfo): string {
   let code = "";
 
