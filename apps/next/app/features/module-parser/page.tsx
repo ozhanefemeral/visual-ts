@@ -1,5 +1,5 @@
 import { ModuleInfo } from "@/components/file-parser/ModuleInfo";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@ui/separator";
 
 export default function ModuleParserPage() {
   return (

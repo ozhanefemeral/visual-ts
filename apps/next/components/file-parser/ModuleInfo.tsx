@@ -1,4 +1,4 @@
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from "@ui/scroll-area";
 import { CodeViewer } from "./CodeViewer";
 
 import { ModuleTypes } from "./ModuleTypes";

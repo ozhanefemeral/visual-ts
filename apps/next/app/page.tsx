@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import GithubIcon from "@/public/github-mark-white.svg";
