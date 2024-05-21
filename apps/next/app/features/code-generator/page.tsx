@@ -1,4 +1,4 @@
-import { CodeGenerator } from "@/components/CodeGenerator";
+import { CodeGenerator } from "@code-generator/CodeGenerator";
 import { ProjectFunctions } from "@parser/components/project-functions";
 import React from "react";
 
