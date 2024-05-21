@@ -9,7 +9,8 @@
     "paths": {
       "@/*": ["./*"],
       "@ui/*": ["../../packages/ui/src/*"],
-      "@parser/*": ["../../packages/parser/src/*"]
+      "@parser/*": ["../../packages/parser/src/*"],
+      "@code-generator/*": ["../../packages/code-generator/src/*"]
     }
   },
   "include": [
