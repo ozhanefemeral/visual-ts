@@ -9,6 +9,8 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "../../packages/ui/src/**/*.{ts,tsx}",
+    "../../packages/code-generator/src/**/*.{ts,tsx}",
+    "../../packages/parser/src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
