@@ -2,13 +2,12 @@
 
 Develop TypeScript / React apps with drag & drop!
 
-![code-generator](https://github.com/ozhanefemeral/visual-ts/assets/22786810/2939341e-8a37-428a-80aa-a76c35c3a1b5)
+![code-generator](https://github.com/ozhanefemeral/visual-ts/assets/22786810/68d5f1ea-84dd-4955-abf9-81b3e0e5b1d3)
 
 ## Overview
 
 The VisualTS tool allows you to visualize the structure and contents of TypeScript files and React components. It aims to provide a user-friendly interface for developers to explore and understand the codebase they're working with.
 
-![image](https://github.com/ozhanefemeral/visual-ts/assets/22786810/d288b080-ce05-405e-b9c1-2d112dc5ba04)
 
 ## Key Features
 
