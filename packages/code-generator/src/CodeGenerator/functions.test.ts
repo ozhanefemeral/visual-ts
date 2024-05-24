@@ -86,6 +86,37 @@ describe("createFunctionCall", () => {
 
     expect(codeString).toBe("await myFunction()");
   });
+
+  it("should create a function call expression with async functions with parameters", () => {
+    const functionInfo = {
+      name: "myFunction",
+      returnType: "Promise<void>",
+      parameters: [
+        {
+          name: "name",
+          type: "string",
+        },
+        {
+          name: "age",
+          type: "number",
+        },
+      ],
+      jsDocComment: "This is a test function.",
+      code: "async function myFunction(name: string, age: number) {\n  console.log('Hello, world!');\n}",
+      variables: [],
+    };
+
+    const result = createFunctionCall(functionInfo);
+    const codeString = ts
+      .createPrinter()
+      .printNode(
+        ts.EmitHint.Unspecified,
+        result,
+        ts.createSourceFile("", "", ts.ScriptTarget.Latest)
+      );
+
+    expect(codeString).toBe("await myFunction(name, age)");
+  });
 });
 
 describe("createVariableWithFunctionCall", () => {
