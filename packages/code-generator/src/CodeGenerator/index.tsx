@@ -1,44 +1,12 @@
 "use client";
 
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
-import { useEffect, useState } from "react";
-import { FunctionInfo } from "@repo/parser";
+import { CodeViewer } from "@parser/components/file-parser/CodeViewer";
 import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
+import { useEffect, useState } from "react";
 import { useCodeGenerator } from "./context";
-import { CodeViewer } from "@parser/components/file-parser/CodeViewer";
-export function generateCodeFromFunction(functionInfo: FunctionInfo): string {
-  let code = "";
-
-  const variableName = functionInfo.name.toLowerCase();
-  const parameters = functionInfo.parameters;
-  const isAsync = functionInfo.returnType?.includes("Promise");
-
-  code += `let ${variableName} = ${isAsync ? "await" : ""} ${functionInfo.name}(`;
-
-  code += ");";
-
-  return code;
-}
-
-export function generateCode(functionInfos: FunctionInfo[]): string {
-  let code = "";
-
-  code += `function generatedFunction() { \n`;
-
-  const isAsync = functionInfos.some((f) => f.returnType?.includes("Promise"));
-
-  if (isAsync) {
-    code = `async ${code}`;
-  }
-
-  for (const functionInfo of functionInfos) {
-    code += generateCodeFromFunction(functionInfo) + "\n";
-  }
-
-  code += `} \n`;
-  return code;
-}
+import { generateCode } from "./functions";
 
 const FunctionDropZone: React.FC = () => {
   const { functions, setFunctions } = useCodeGenerator();
@@ -92,6 +60,13 @@ export const CodeGenerator: React.FC = () => {
   const [output, setOutput] = useState<string>("");
   const isEmpty = functions.length === 0;
 
+  const [outputWithBreakLine, setOutputWithBreakLine] = useState<string>("");
+
+  useEffect(() => {
+    const modifiedOutput = output.replace(/;/g, ";\n").replace(/{/g, "{\n");
+    setOutputWithBreakLine(modifiedOutput);
+  }, [output]);
+
   useEffect(() => {
     setOutput(generateCode(functions));
   }, [functions, setFunctions]);
@@ -104,12 +79,12 @@ export const CodeGenerator: React.FC = () => {
           <FunctionDropZone />
         </div>
         <div className="col-span-1">
-          <CodeViewer fileContent={output} />
+          <CodeViewer fileContent={outputWithBreakLine} />
         </div>
         <div className="col-span-2 mt-auto flex justify-end gap-x-4 items-end">
           <Button
             onClick={() => {
-              navigator.clipboard.writeText(output);
+              navigator.clipboard.writeText(outputWithBreakLine);
             }}
             disabled={isEmpty}
           >
