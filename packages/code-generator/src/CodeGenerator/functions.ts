@@ -48,9 +48,7 @@ export function createVariableWithFunctionCall(
   );
 }
 
-export function generateCodeWithCompilerApi(
-  functionInfos: FunctionInfo[]
-): string {
+export function generateCode(functionInfos: FunctionInfo[]): string {
   let code = "";
 
   const functionName = "generatedFunction";

@@ -2,6 +2,7 @@ import ts from "typescript";
 import {
   createFunctionCall,
   createVariableWithFunctionCall,
+  generateCode,
 } from "./functions";
 
 describe("dummy test for 'packages/code-generator'", () => {

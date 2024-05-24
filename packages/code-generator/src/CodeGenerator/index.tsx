@@ -6,7 +6,7 @@ import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
 import { useEffect, useState } from "react";
 import { useCodeGenerator } from "./context";
-import { generateCodeWithCompilerApi } from "./functions";
+import { generateCode } from "./functions";
 
 const FunctionDropZone: React.FC = () => {
   const { functions, setFunctions } = useCodeGenerator();
@@ -68,7 +68,7 @@ export const CodeGenerator: React.FC = () => {
   }, [output]);
 
   useEffect(() => {
-    setOutput(generateCodeWithCompilerApi(functions));
+    setOutput(generateCode(functions));
   }, [functions, setFunctions]);
 
   return (
