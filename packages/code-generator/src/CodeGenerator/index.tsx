@@ -7,36 +7,69 @@ import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
 import { useCodeGenerator } from "./context";
 import { CodeViewer } from "@parser/components/file-parser/CodeViewer";
-export function generateCodeFromFunction(functionInfo: FunctionInfo): string {
-  let code = "";
+import ts from "typescript";
 
-  const variableName = functionInfo.name.toLowerCase();
-  const parameters = functionInfo.parameters;
-  const isAsync = functionInfo.returnType?.includes("Promise");
-
-  code += `let ${variableName} = ${isAsync ? "await" : ""} ${functionInfo.name}(`;
-
-  code += ");";
-
-  return code;
+function createFunctionCall(functionInfo: FunctionInfo): ts.CallExpression {
+  return ts.factory.createCallExpression(
+    ts.factory.createIdentifier(functionInfo.name),
+    undefined,
+    !!functionInfo.parameters && functionInfo.parameters.length > 0
+      ? functionInfo.parameters.map((param) => {
+          return ts.factory.createIdentifier(param.name);
+        })
+      : undefined
+  );
 }
 
-export function generateCode(functionInfos: FunctionInfo[]): string {
+function createVariableWithFunctionCall(
+  functionInfo: FunctionInfo
+): ts.VariableStatement {
+  return ts.factory.createVariableStatement(
+    undefined,
+    ts.factory.createVariableDeclarationList(
+      [
+        ts.factory.createVariableDeclaration(
+          ts.factory.createIdentifier(functionInfo.name.toLowerCase()),
+          undefined,
+          undefined,
+          createFunctionCall(functionInfo)
+        ),
+      ],
+      ts.NodeFlags.Const
+    )
+  );
+}
+
+export function generateCodeWithCompilerApi(
+  functionInfos: FunctionInfo[]
+): string {
   let code = "";
 
-  code += `function generatedFunction() { \n`;
-
+  const functionName = "generatedFunction";
   const isAsync = functionInfos.some((f) => f.returnType?.includes("Promise"));
 
-  if (isAsync) {
-    code = `async ${code}`;
-  }
+  const functionDeclaration = ts.factory.createFunctionDeclaration(
+    isAsync
+      ? [ts.factory.createModifier(ts.SyntaxKind.AsyncKeyword)]
+      : undefined, //modifiers
+    undefined, //asteriskToken
+    functionName, //name
+    undefined, //typeParameters
+    [], //parameters
+    undefined, //type
+    ts.factory.createBlock([
+      ...functionInfos.map(createVariableWithFunctionCall),
+    ])
+  );
 
-  for (const functionInfo of functionInfos) {
-    code += generateCodeFromFunction(functionInfo) + "\n";
-  }
+  code += ts
+    .createPrinter()
+    .printNode(
+      ts.EmitHint.Unspecified,
+      functionDeclaration,
+      ts.createSourceFile("temp.ts", "", ts.ScriptTarget.Latest)
+    );
 
-  code += `} \n`;
   return code;
 }
 
@@ -92,8 +125,15 @@ export const CodeGenerator: React.FC = () => {
   const [output, setOutput] = useState<string>("");
   const isEmpty = functions.length === 0;
 
+  const [outputWithBreakLine, setOutputWithBreakLine] = useState<string>("");
+
   useEffect(() => {
-    setOutput(generateCode(functions));
+    const modifiedOutput = output.replace(/;/g, ";\n").replace(/{/g, "{\n");
+    setOutputWithBreakLine(modifiedOutput);
+  }, [output]);
+
+  useEffect(() => {
+    setOutput(generateCodeWithCompilerApi(functions));
   }, [functions, setFunctions]);
 
   return (
@@ -104,12 +144,12 @@ export const CodeGenerator: React.FC = () => {
           <FunctionDropZone />
         </div>
         <div className="col-span-1">
-          <CodeViewer fileContent={output} />
+          <CodeViewer fileContent={outputWithBreakLine} />
         </div>
         <div className="col-span-2 mt-auto flex justify-end gap-x-4 items-end">
           <Button
             onClick={() => {
-              navigator.clipboard.writeText(output);
+              navigator.clipboard.writeText(outputWithBreakLine);
             }}
             disabled={isEmpty}
           >
