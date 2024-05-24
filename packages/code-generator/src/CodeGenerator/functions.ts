@@ -1,7 +1,23 @@
 import { FunctionInfo } from "@repo/parser";
 import ts from "typescript";
 
-function createFunctionCall(functionInfo: FunctionInfo): ts.CallExpression {
+export function createFunctionCall(
+  functionInfo: FunctionInfo
+): ts.CallExpression | ts.AwaitExpression {
+  if (functionInfo.returnType?.includes("Promise")) {
+    return ts.factory.createAwaitExpression(
+      ts.factory.createCallExpression(
+        ts.factory.createIdentifier(functionInfo.name),
+        undefined,
+        !!functionInfo.parameters && functionInfo.parameters.length > 0
+          ? functionInfo.parameters.map((param) => {
+              return ts.factory.createIdentifier(param.name);
+            })
+          : undefined
+      )
+    );
+  }
+
   return ts.factory.createCallExpression(
     ts.factory.createIdentifier(functionInfo.name),
     undefined,
@@ -13,7 +29,7 @@ function createFunctionCall(functionInfo: FunctionInfo): ts.CallExpression {
   );
 }
 
-function createVariableWithFunctionCall(
+export function createVariableWithFunctionCall(
   functionInfo: FunctionInfo
 ): ts.VariableStatement {
   return ts.factory.createVariableStatement(
