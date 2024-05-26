@@ -4,9 +4,7 @@ import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import { CodeViewer } from "@parser/components/file-parser/CodeViewer";
 import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
-import { useEffect, useState } from "react";
 import { useCodeGenerator } from "./context";
-import { generateCode } from "./functions";
 
 const FunctionDropZone: React.FC = () => {
   const { functions, setFunctions } = useCodeGenerator();
@@ -56,20 +54,10 @@ const FunctionDropZone: React.FC = () => {
 };
 
 export const CodeGenerator: React.FC = () => {
-  const { functions, setFunctions } = useCodeGenerator();
-  const [output, setOutput] = useState<string>("");
+  const { functions, setFunctions, code, variables } = useCodeGenerator();
   const isEmpty = functions.length === 0;
 
-  const [outputWithBreakLine, setOutputWithBreakLine] = useState<string>("");
-
-  useEffect(() => {
-    const modifiedOutput = output.replace(/;/g, ";\n").replace(/{/g, "{\n");
-    setOutputWithBreakLine(modifiedOutput);
-  }, [output]);
-
-  useEffect(() => {
-    setOutput(generateCode(functions));
-  }, [functions, setFunctions]);
+  const outputWithBreakLine = code.replace(/;/g, ";\n").replace(/{/g, "{\n");
 
   return (
     <section className="h-fit p-4 border border-gray-200 border-dashed rounded-md">

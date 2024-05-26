@@ -29,5 +29,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@ts-morph/bootstrap": "^0.23.0",
+    "ts-morph": "^22.0.0"
+  }
 }
