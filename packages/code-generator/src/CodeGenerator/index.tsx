@@ -54,8 +54,10 @@ const FunctionDropZone: React.FC = () => {
 };
 
 export const CodeGenerator: React.FC = () => {
-  const { functions, setFunctions, code } = useCodeGenerator();
+  const { functions, setFunctions, code, variables } = useCodeGenerator();
   const isEmpty = functions.length === 0;
+
+  console.log(variables);
 
   const outputWithBreakLine = code.replace(/;/g, ";\n").replace(/{/g, "{\n");
 

@@ -1,5 +1,9 @@
-import { FunctionInfo } from "@repo/parser";
+import { FunctionInfo, VariableInfo } from "@repo/parser";
 import ts from "typescript";
+
+export interface VariableInfoWithIndex extends VariableInfo {
+  index: number;
+}
 
 export function createFunctionCall(
   functionInfo: FunctionInfo
@@ -9,11 +13,9 @@ export function createFunctionCall(
       ts.factory.createCallExpression(
         ts.factory.createIdentifier(functionInfo.name),
         undefined,
-        !!functionInfo.parameters && functionInfo.parameters.length > 0
-          ? functionInfo.parameters.map((param) => {
-              return ts.factory.createIdentifier(param.name);
-            })
-          : undefined
+        functionInfo.parameters?.map((param) =>
+          ts.factory.createIdentifier(param.name)
+        ) || []
       )
     );
   }
@@ -21,23 +23,28 @@ export function createFunctionCall(
   return ts.factory.createCallExpression(
     ts.factory.createIdentifier(functionInfo.name),
     undefined,
-    !!functionInfo.parameters && functionInfo.parameters.length > 0
-      ? functionInfo.parameters.map((param) => {
-          return ts.factory.createIdentifier(param.name);
-        })
-      : undefined
+    functionInfo.parameters?.map((param) =>
+      ts.factory.createIdentifier(param.name)
+    ) || []
   );
 }
 
 export function createVariableWithFunctionCall(
-  functionInfo: FunctionInfo
+  functionInfo: FunctionInfo,
+  index: number
 ): ts.VariableStatement {
+  const variableInfo: VariableInfoWithIndex = {
+    name: functionInfo.name.toLowerCase(),
+    type: functionInfo.returnType || "any",
+    index,
+  };
+
   return ts.factory.createVariableStatement(
     undefined,
     ts.factory.createVariableDeclarationList(
       [
         ts.factory.createVariableDeclaration(
-          ts.factory.createIdentifier(functionInfo.name.toLowerCase()),
+          ts.factory.createIdentifier(variableInfo.name),
           undefined,
           undefined,
           createFunctionCall(functionInfo)
@@ -48,9 +55,23 @@ export function createVariableWithFunctionCall(
   );
 }
 
-export function generateCode(functionInfos: FunctionInfo[]): string {
-  let code = "";
+export function extractVariables(
+  functionInfos: FunctionInfo[]
+): VariableInfoWithIndex[] {
+  return functionInfos.map((func, index) => {
+    const type = func.returnType?.startsWith("Promise<")
+      ? func.returnType.slice(8, -1) // Extract the type inside Promise<T>
+      : func.returnType || "any";
 
+    return {
+      name: func.name.toLowerCase(),
+      type,
+      index: index,
+    };
+  });
+}
+
+export function generateCode(functionInfos: FunctionInfo[]): string {
   const functionName = "generatedFunction";
   const isAsync = functionInfos.some((f) => f.returnType?.includes("Promise"));
 
@@ -64,17 +85,15 @@ export function generateCode(functionInfos: FunctionInfo[]): string {
     [], //parameters
     undefined, //type
     ts.factory.createBlock([
-      ...functionInfos.map(createVariableWithFunctionCall),
+      ...functionInfos.map((f, i) => createVariableWithFunctionCall(f, i)),
     ])
   );
 
-  code += ts
+  return ts
     .createPrinter()
     .printNode(
       ts.EmitHint.Unspecified,
       functionDeclaration,
       ts.createSourceFile("temp.ts", "", ts.ScriptTarget.Latest)
     );
-
-  return code;
 }
