@@ -6,16 +6,26 @@ export interface VariableInfoWithIndex extends VariableInfo {
 }
 
 export function createFunctionCall(
-  functionInfo: FunctionInfo
+  functionInfo: FunctionInfo,
+  variables: VariableInfoWithIndex[],
+  index: number
 ): ts.CallExpression | ts.AwaitExpression {
+  const parameterExpressions =
+    functionInfo.parameters?.map((param) => {
+      const variable = findVariableByType(variables, param.type, true, index);
+      if (variable) {
+        return ts.factory.createIdentifier(variable.name);
+      } else {
+        return ts.factory.createIdentifier(param.name);
+      }
+    }) || [];
+
   if (functionInfo.returnType?.includes("Promise")) {
     return ts.factory.createAwaitExpression(
       ts.factory.createCallExpression(
         ts.factory.createIdentifier(functionInfo.name),
         undefined,
-        functionInfo.parameters?.map((param) =>
-          ts.factory.createIdentifier(param.name)
-        ) || []
+        parameterExpressions
       )
     );
   }
@@ -23,14 +33,13 @@ export function createFunctionCall(
   return ts.factory.createCallExpression(
     ts.factory.createIdentifier(functionInfo.name),
     undefined,
-    functionInfo.parameters?.map((param) =>
-      ts.factory.createIdentifier(param.name)
-    ) || []
+    parameterExpressions
   );
 }
 
 export function createVariableWithFunctionCall(
   functionInfo: FunctionInfo,
+  variables: VariableInfoWithIndex[],
   index: number
 ): ts.VariableStatement {
   const variableInfo: VariableInfoWithIndex = {
@@ -47,7 +56,7 @@ export function createVariableWithFunctionCall(
           ts.factory.createIdentifier(variableInfo.name),
           undefined,
           undefined,
-          createFunctionCall(functionInfo)
+          createFunctionCall(functionInfo, variables, index)
         ),
       ],
       ts.NodeFlags.Const
@@ -71,7 +80,25 @@ export function extractVariables(
   });
 }
 
-export function generateCode(functionInfos: FunctionInfo[]): string {
+export function findVariableByType(
+  variables: VariableInfoWithIndex[],
+  type: string,
+  latest = true,
+  toIndex = Infinity
+): VariableInfoWithIndex | undefined {
+  const filteredVariables = variables.filter((v, i) => i < toIndex);
+
+  if (latest) {
+    return filteredVariables.reverse().find((v) => v.type === type);
+  }
+
+  return filteredVariables.find((v) => v.type === type);
+}
+
+export function generateCode(
+  functionInfos: FunctionInfo[],
+  variables: VariableInfoWithIndex[]
+): string {
   const functionName = "generatedFunction";
   const isAsync = functionInfos.some((f) => f.returnType?.includes("Promise"));
 
@@ -85,7 +112,9 @@ export function generateCode(functionInfos: FunctionInfo[]): string {
     [], //parameters
     undefined, //type
     ts.factory.createBlock([
-      ...functionInfos.map((f, i) => createVariableWithFunctionCall(f, i)),
+      ...functionInfos.map((f, i) =>
+        createVariableWithFunctionCall(f, variables, i)
+      ),
     ])
   );
 

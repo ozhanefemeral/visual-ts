@@ -25,7 +25,7 @@ describe("createFunctionCall", () => {
       variables: [],
     };
 
-    const result = createFunctionCall(functionInfo);
+    const result = createFunctionCall(functionInfo, [], 0);
     const codeString = ts
       .createPrinter()
       .printNode(
@@ -56,7 +56,7 @@ describe("createFunctionCall", () => {
       variables: [],
     };
 
-    const result = createFunctionCall(functionInfo);
+    const result = createFunctionCall(functionInfo, [], 0);
     const codeString = ts
       .createPrinter()
       .printNode(
@@ -78,7 +78,7 @@ describe("createFunctionCall", () => {
       variables: [],
     };
 
-    const result = createFunctionCall(functionInfo);
+    const result = createFunctionCall(functionInfo, [], 0);
     const codeString = ts
       .createPrinter()
       .printNode(
@@ -109,7 +109,7 @@ describe("createFunctionCall", () => {
       variables: [],
     };
 
-    const result = createFunctionCall(functionInfo);
+    const result = createFunctionCall(functionInfo, [], 0);
     const codeString = ts
       .createPrinter()
       .printNode(
@@ -133,7 +133,7 @@ describe("createVariableWithFunctionCall", () => {
       variables: [],
     };
 
-    const result = createVariableWithFunctionCall(functionInfo, 0);
+    const result = createVariableWithFunctionCall(functionInfo, [], 0);
     const codeString = ts
       .createPrinter()
       .printNode(
@@ -164,7 +164,7 @@ describe("createVariableWithFunctionCall", () => {
       variables: [],
     };
 
-    const result = createVariableWithFunctionCall(functionInfo, 0);
+    const result = createVariableWithFunctionCall(functionInfo, [], 0);
     const codeString = ts
       .createPrinter()
       .printNode(
