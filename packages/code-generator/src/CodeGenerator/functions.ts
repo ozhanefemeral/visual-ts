@@ -42,8 +42,15 @@ export function createVariableWithFunctionCall(
   variables: VariableInfoWithIndex[],
   index: number
 ): ts.VariableStatement {
+  const variableName = functionInfo.name.toLowerCase();
+  const existingVariables = variables.filter(
+    (v) => v.name.startsWith(variableName) && v.index < index
+  );
+  const variableCount = existingVariables.length;
+
   const variableInfo: VariableInfoWithIndex = {
-    name: functionInfo.name.toLowerCase(),
+    name:
+      variableCount > 0 ? `${variableName}${variableCount + 1}` : variableName,
     type: functionInfo.returnType || "any",
     index,
   };
