@@ -5,6 +5,13 @@ export interface VariableInfoWithIndex extends VariableInfo {
   index: number;
 }
 
+/**
+ * Creates a function call expression.
+ * @param functionInfo Information about the function to call.
+ * @param variables Available variables to use as parameters.
+ * @param index Current index in the function sequence.
+ * @returns A CallExpression or AwaitExpression.
+ */
 export function createFunctionCall(
   functionInfo: FunctionInfo,
   variables: VariableInfoWithIndex[],
@@ -13,30 +20,29 @@ export function createFunctionCall(
   const parameterExpressions =
     functionInfo.parameters?.map((param) => {
       const variable = findVariableByType(variables, param.type, true, index);
-      if (variable) {
-        return ts.factory.createIdentifier(variable.name);
-      } else {
-        return ts.factory.createIdentifier(param.name);
-      }
+      return variable
+        ? ts.factory.createIdentifier(variable.name)
+        : ts.factory.createIdentifier(param.name);
     }) || [];
 
-  if (functionInfo.returnType?.includes("Promise")) {
-    return ts.factory.createAwaitExpression(
-      ts.factory.createCallExpression(
-        ts.factory.createIdentifier(functionInfo.name),
-        undefined,
-        parameterExpressions
-      )
-    );
-  }
-
-  return ts.factory.createCallExpression(
+  const callExpression = ts.factory.createCallExpression(
     ts.factory.createIdentifier(functionInfo.name),
     undefined,
     parameterExpressions
   );
+
+  return functionInfo.returnType?.includes("Promise")
+    ? ts.factory.createAwaitExpression(callExpression)
+    : callExpression;
 }
 
+/**
+ * Creates a variable declaration with a function call.
+ * @param functionInfo Information about the function to call.
+ * @param variables Available variables.
+ * @param index Current index in the function sequence.
+ * @returns A VariableStatement.
+ */
 export function createVariableWithFunctionCall(
   functionInfo: FunctionInfo,
   variables: VariableInfoWithIndex[],
@@ -48,19 +54,15 @@ export function createVariableWithFunctionCall(
   );
   const variableCount = existingVariables.length;
 
-  const variableInfo: VariableInfoWithIndex = {
-    name:
-      variableCount > 0 ? `${variableName}${variableCount + 1}` : variableName,
-    type: functionInfo.returnType || "any",
-    index,
-  };
+  const newVariableName =
+    variableCount > 0 ? `${variableName}${variableCount + 1}` : variableName;
 
   return ts.factory.createVariableStatement(
     undefined,
     ts.factory.createVariableDeclarationList(
       [
         ts.factory.createVariableDeclaration(
-          ts.factory.createIdentifier(variableInfo.name),
+          ts.factory.createIdentifier(newVariableName),
           undefined,
           undefined,
           createFunctionCall(functionInfo, variables, index)
@@ -71,22 +73,31 @@ export function createVariableWithFunctionCall(
   );
 }
 
+/**
+ * Extracts variables from function information.
+ * @param functionInfos Array of function information.
+ * @returns Array of variable information.
+ */
 export function extractVariables(
   functionInfos: FunctionInfo[]
 ): VariableInfoWithIndex[] {
-  return functionInfos.map((func, index) => {
-    const type = func.returnType?.startsWith("Promise<")
-      ? func.returnType.slice(8, -1) // Extract the type inside Promise<T>
-      : func.returnType || "any";
-
-    return {
-      name: func.name.toLowerCase(),
-      type,
-      index: index,
-    };
-  });
+  return functionInfos.map((func, index) => ({
+    name: func.name.toLowerCase(),
+    type: func.returnType?.startsWith("Promise<")
+      ? func.returnType.slice(8, -1)
+      : func.returnType || "any",
+    index: index,
+  }));
 }
 
+/**
+ * Finds a variable by type.
+ * @param variables Available variables.
+ * @param type Type to search for.
+ * @param latest Whether to return the latest matching variable.
+ * @param toIndex Upper bound index to search.
+ * @returns Matching variable information or undefined.
+ */
 export function findVariableByType(
   variables: VariableInfoWithIndex[],
   type: string,
@@ -102,6 +113,13 @@ export function findVariableByType(
   return filteredVariables.find((v) => v.type === type);
 }
 
+/**
+ * Generates code based on function information.
+ * @param functionInfos Array of function information.
+ * @param variables Available variables.
+ * @param options Code generation options.
+ * @returns Generated code as a string.
+ */
 export function generateCode(
   functionInfos: FunctionInfo[],
   variables: VariableInfoWithIndex[]
