@@ -9,3 +9,4 @@ export * from "./module-parser/utils";
 export * from "./utils/file-utils";
 export * from "./utils/typescript-utils";
 export * from "./utils/color-utils";
+export * from "./utils/codebase-searcher";
