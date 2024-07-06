@@ -1,60 +1,53 @@
-import * as ts from "typescript";
+import { Node, Project } from "ts-morph";
 import { FunctionInfo } from "./types";
 import { getFunctionVariables } from "./utils";
 
-export function parseFunctionsFromFile(filePath: string) {
-  const compilerOptions: ts.CompilerOptions = {
-    target: ts.ScriptTarget.ES2020,
-    module: ts.ModuleKind.CommonJS,
-  };
-  const program = ts.createProgram([filePath], compilerOptions);
-  const sourceFile = program.getSourceFile(filePath);
-  if (!sourceFile) {
-    throw new Error("Source file not found");
+export function getFunctionInfoFromNode(node: Node): FunctionInfo | null {
+  if (Node.isFunctionDeclaration(node)) {
+    const name = node.getName() || "anonymous";
+    const returnType = node.getReturnType().getText();
+    const parameters = node.getParameters().map((param) => ({
+      name: param.getName(),
+      type: param.getType().getText(),
+    }));
+    const jsDocComment = node.getJsDocs()[0]?.getDescription();
+
+    const functionInfo: FunctionInfo = {
+      name,
+      returnType,
+      parameters,
+      jsDocComment,
+      code: node.getText(),
+      variables: getFunctionVariables(node.getSourceFile(), name),
+    };
+
+    return functionInfo;
   }
-  const typeChecker = program.getTypeChecker();
+
+  return null;
+}
+
+export function parseFunctionsFromFile(filePath: string) {
+  const project = new Project();
+  const sourceFile = project.addSourceFileAtPath(filePath);
   const functionsInfo: Array<FunctionInfo> = [];
   const usedTypes: Array<string> = [];
 
-  function visit(node: ts.Node) {
-    if (ts.isFunctionDeclaration(node) && node.name) {
-      const name = node.name.text;
-      const returnType = node.type
-        ? typeChecker.typeToString(typeChecker.getTypeFromTypeNode(node.type))
-        : "void";
-      const parameters = node.parameters.map((parameter) => {
-        const parameterName = parameter.name.getText(sourceFile);
-        const parameterType = parameter.type
-          ? typeChecker.typeToString(
-              typeChecker.getTypeFromTypeNode(parameter.type)
-            )
-          : "any";
-        return { name: parameterName, type: parameterType };
-      });
-      const jsDocComment = ts.getJSDocCommentsAndTags(node)[0]?.comment;
-      // const variables;
-      const functionInfo: FunctionInfo = {
-        name,
-        returnType,
-        parameters,
-        jsDocComment: jsDocComment?.toString(),
-        code: node.getText(),
-        variables: getFunctionVariables(sourceFile!, name),
-      };
+  function visit(node: Node) {
+    const functionInfo = getFunctionInfoFromNode(node);
+    if (functionInfo) {
+      functionsInfo.push(functionInfo);
 
       // Traverse the function body to find used variables
-      const visitFunctionBody = function (node: ts.Node) {
-        if (ts.isIdentifier(node)) {
-          const variableName = node.text;
+      node.forEachDescendant((descendant) => {
+        if (Node.isIdentifier(descendant)) {
+          const variableName = descendant.getText();
           usedTypes.push(variableName);
         }
-        ts.forEachChild(node, visitFunctionBody);
-      };
-      ts.forEachChild(node.body!, visitFunctionBody);
-
-      functionsInfo.push(functionInfo);
+      });
     }
-    ts.forEachChild(node, visit);
+
+    node.forEachChild(visit);
   }
 
   visit(sourceFile);

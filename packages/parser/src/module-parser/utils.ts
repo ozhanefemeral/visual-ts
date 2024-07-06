@@ -1,49 +1,34 @@
-import * as ts from "typescript";
+import { Node, SourceFile } from "ts-morph";
 import { VariableInfo } from "./types";
 
-function parseVariables(node: ts.Node): VariableInfo[] {
+function parseVariables(node: Node): VariableInfo[] {
   const variables: VariableInfo[] = [];
 
-  function visit(node: ts.Node) {
-    if (ts.isVariableDeclaration(node)) {
-      if (node.name && ts.isIdentifier(node.name)) {
-        const name = node.name.text;
-        const type = node.type ? node.type.getText() : "any";
-        variables.push({ name, type });
-      }
-    } else {
-      ts.forEachChild(node, visit);
+  node.forEachDescendant((descendant) => {
+    if (Node.isVariableDeclaration(descendant)) {
+      const name = descendant.getName();
+      const type = descendant.getType().getText();
+      variables.push({ name, type });
     }
-  }
+  });
 
-  visit(node);
   return variables;
 }
 
 export function getFunctionVariables(
-  sourceFile: ts.SourceFile,
+  sourceFile: SourceFile,
   functionName: string
 ): VariableInfo[] | undefined {
-  let variables: VariableInfo[] | undefined;
+  const functionNode =
+    sourceFile.getFunction(functionName) ||
+    sourceFile.getFirstDescendant(
+      (node) =>
+        Node.isFunctionExpression(node) && node.getName() === functionName
+    );
 
-  function visit(node: ts.Node) {
-    if (
-      ts.isFunctionDeclaration(node) &&
-      node.name &&
-      node.name.text === functionName
-    ) {
-      variables = parseVariables(node);
-    } else if (
-      ts.isFunctionExpression(node) &&
-      node.name &&
-      node.name.text === functionName
-    ) {
-      variables = parseVariables(node);
-    } else {
-      ts.forEachChild(node, visit);
-    }
+  if (functionNode) {
+    return parseVariables(functionNode);
   }
 
-  visit(sourceFile);
-  return variables;
+  return undefined;
 }
