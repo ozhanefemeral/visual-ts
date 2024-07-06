@@ -5,6 +5,7 @@ import { CodeViewer } from "@parser/components/file-parser/CodeViewer";
 import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
 import { useCodeGenerator } from "./context";
+import SearchDialog from "@parser/components/shared/SearchDialog";
 
 const FunctionDropZone: React.FC = () => {
   const { functions, setFunctions } = useCodeGenerator();
@@ -60,33 +61,38 @@ export const CodeGenerator: React.FC = () => {
   const outputWithBreakLine = code.replace(/;/g, ";\n").replace(/{/g, "{\n");
 
   return (
-    <section className="h-fit p-4 border border-gray-200 border-dashed rounded-md">
-      <h1 className="text-2xl font-bold pb-4">Code Generator</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="col-span-1">
-          <FunctionDropZone />
+    <>
+      <SearchDialog
+        onAddFunction={(func) => setFunctions([...functions, func])}
+      />
+      <section className="h-fit p-4 border border-gray-200 border-dashed rounded-md">
+        <h1 className="text-2xl font-bold pb-4">Code Generator</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="col-span-1">
+            <FunctionDropZone />
+          </div>
+          <div className="col-span-1">
+            <CodeViewer fileContent={outputWithBreakLine} />
+          </div>
+          <div className="col-span-2 mt-auto flex justify-end gap-x-4 items-end">
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(outputWithBreakLine);
+              }}
+              disabled={isEmpty}
+            >
+              Copy to clipboard
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => setFunctions([])}
+              disabled={isEmpty}
+            >
+              Clear
+            </Button>
+          </div>
         </div>
-        <div className="col-span-1">
-          <CodeViewer fileContent={outputWithBreakLine} />
-        </div>
-        <div className="col-span-2 mt-auto flex justify-end gap-x-4 items-end">
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(outputWithBreakLine);
-            }}
-            disabled={isEmpty}
-          >
-            Copy to clipboard
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => setFunctions([])}
-            disabled={isEmpty}
-          >
-            Clear
-          </Button>
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
