@@ -1,11 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { SearchResult } from "@repo/parser";
+import { FunctionInfo, SearchResult } from "@repo/parser";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@ui/dialog";
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
+import { Button } from "@ui/button";
 
-const SearchDialog: React.FC = () => {
+interface SearchDialogProps {
+  onAddFunction: (functionInfo: FunctionInfo) => void;
+}
+const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -82,9 +86,20 @@ const SearchDialog: React.FC = () => {
                 </h3>
                 {results.map((result, index) => (
                   <React.Fragment key={result.name}>
-                    <div className="py-2">
-                      <p className="font-medium">{result.name}</p>
-                      <p className="text-sm text-gray-500">{result.filePath}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="py-2">
+                        <p className="font-medium">{result.name}</p>
+                        <p className="text-sm text-gray-500">
+                          {result.filePath}
+                        </p>
+                      </div>
+                      {!!result.functionInfo && (
+                        <Button
+                          onClick={() => onAddFunction(result.functionInfo!)}
+                        >
+                          Add
+                        </Button>
+                      )}
                     </div>
                     {index < results.length - 1 && <Separator />}
                   </React.Fragment>

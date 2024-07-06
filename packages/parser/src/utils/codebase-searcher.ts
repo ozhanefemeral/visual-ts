@@ -1,3 +1,5 @@
+import { getFunctionInfoFromNode } from "@parser/module-parser";
+import { FunctionInfo } from "@parser/module-parser/types";
 import { Project, SourceFile, Node, SyntaxKind } from "ts-morph";
 
 export interface SearchResult {
@@ -5,6 +7,7 @@ export interface SearchResult {
   name: string;
   filePath: string;
   lineNumber: number;
+  functionInfo?: FunctionInfo | null;
 }
 
 export class CodebaseSearcher {
@@ -47,10 +50,12 @@ export class CodebaseSearcher {
     sourceFile.forEachDescendant((node: Node) => {
       let type: SearchResult["type"] | undefined;
       let name: string | undefined;
+      let functionInfo: FunctionInfo | undefined;
 
       if (Node.isFunctionDeclaration(node) || Node.isMethodDeclaration(node)) {
         type = "function";
         name = node.getName();
+        functionInfo = getFunctionInfoFromNode(node)!;
       } else if (Node.isClassDeclaration(node) && node.isExported()) {
         type = "component";
         name = node.getName();
@@ -67,12 +72,18 @@ export class CodebaseSearcher {
 
       if (type && name && name.toLowerCase().includes(query)) {
         const { line } = sourceFile.getLineAndColumnAtPos(node.getStart());
-        results.push({
+        const result: SearchResult = {
           type,
           name,
           filePath: sourceFile.getFilePath(),
           lineNumber: line,
-        });
+        };
+
+        if (type === "function" && functionInfo) {
+          result.functionInfo = functionInfo;
+        }
+
+        results.push(result);
       }
     });
   }
