@@ -11,5 +11,8 @@
   "license": "ISC",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@dnd-kit/sortable": "^8.0.0"
   }
 }
