@@ -57,7 +57,7 @@ export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
   }, []);
 
   useEffect(() => {
-    setCode(generateCode(functions, variables));
+    setCode(generateCode(functions));
     setVariables(extractVariables(functions));
   }, [functions, setFunctions]);
 
