@@ -1,7 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FunctionInfo, SearchResult } from "@repo/parser";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@ui/dialog";
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
 import { Button } from "@ui/button";
@@ -57,6 +63,9 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Search Codebase</Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Search Codebase</DialogTitle>
