@@ -16,6 +16,7 @@ import { createProject, ts, Project } from "@ts-morph/bootstrap";
 interface Context {
   functions: FunctionInfo[];
   variables: VariableInfoWithIndex[];
+  setVariables: (variables: VariableInfoWithIndex[]) => void;
   setFunctions: (functions: FunctionInfo[]) => void;
   code: string;
   project: Project | null;
@@ -26,6 +27,7 @@ interface Context {
 const CodeGeneratorContext = createContext<Context>({
   functions: [],
   variables: [],
+  setVariables: () => {},
   setFunctions: () => {},
   code: "",
   project: null,
@@ -67,6 +69,7 @@ export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
         functions,
         variables,
         setFunctions,
+        setVariables,
         code,
         project,
         program,
