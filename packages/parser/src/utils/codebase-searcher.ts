@@ -1,6 +1,7 @@
 import { getFunctionInfoFromNode } from "@parser/module-parser";
 import { FunctionInfo } from "@parser/module-parser/types";
 import { Project, SourceFile, Node, SyntaxKind } from "ts-morph";
+import path from "path";
 
 export interface SearchResult {
   type: "function" | "component" | "interface" | "type" | "variable";
@@ -12,8 +13,10 @@ export interface SearchResult {
 
 export class CodebaseSearcher {
   private project: Project;
+  private rootPath: string;
 
   constructor(codebasePath: string) {
+    this.rootPath = codebasePath;
     this.project = new Project({
       tsConfigFilePath: `${codebasePath}/tsconfig.json`,
     });
@@ -29,6 +32,10 @@ export class CodebaseSearcher {
     nodeModulesFiles.forEach((file) => {
       this.project.removeSourceFile(file);
     });
+  }
+
+  private getRelativePath(filePath: string): string {
+    return path.relative(this.rootPath, filePath);
   }
 
   public async search(query: string): Promise<SearchResult[]> {
@@ -75,7 +82,7 @@ export class CodebaseSearcher {
         const result: SearchResult = {
           type,
           name,
-          filePath: sourceFile.getFilePath(),
+          filePath: this.getRelativePath(sourceFile.getFilePath()),
           lineNumber: line,
         };
 
