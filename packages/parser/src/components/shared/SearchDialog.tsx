@@ -64,7 +64,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Search Codebase</Button>
+        <Button>Search Codebase (⌘K)</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

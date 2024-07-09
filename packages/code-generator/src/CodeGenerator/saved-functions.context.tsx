@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { FunctionInfo } from "@parser/module-parser/types";
+import { FunctionInfo } from "@repo/parser";
 import { VariableInfoWithIndex } from "./functions";
 
 interface SavedFunctionState {
@@ -23,6 +23,7 @@ interface SavedFunctionsContextType {
     variables: VariableInfoWithIndex[]
   ) => void;
   loadSavedState: (state: SavedFunctionState) => void;
+  deleteSavedState: (name: string) => void;
 }
 
 const SavedFunctionsContext = createContext<
@@ -64,6 +65,17 @@ export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
     // This function will be implemented in the CodeGenerator component
   };
 
+  const deleteSavedState = (name: string) => {
+    const updatedSavedFunctions = savedFunctions.filter(
+      (func) => func.name !== name
+    );
+    setSavedFunctions(updatedSavedFunctions);
+    localStorage.setItem(
+      "savedFunctions",
+      JSON.stringify(updatedSavedFunctions)
+    );
+  };
+
   return (
     <SavedFunctionsContext.Provider
       value={{
@@ -77,6 +89,7 @@ export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
         setSaveName,
         saveCurrentState,
         loadSavedState,
+        deleteSavedState,
       }}
     >
       {children}
