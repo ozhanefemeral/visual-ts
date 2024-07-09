@@ -6,7 +6,7 @@ import { useCodeGenerator } from "./context";
 import { useSavedFunctions } from "./saved-functions.context";
 import SearchDialog from "@parser/components/shared/SearchDialog";
 import { SortableFunctionList } from "./SortableFunctionList";
-import { SaveDialog, LoadDialog } from "./CodeGeneratorDialogs";
+import { SaveDialog, LoadDialog, HelpDialog } from "./CodeGeneratorDialogs";
 
 export const CodeGenerator: React.FC = () => {
   const { functions, setFunctions, variables, setVariables, code } =
@@ -38,8 +38,9 @@ export const CodeGenerator: React.FC = () => {
           onAddFunction={(func) => setFunctions([...functions, func])}
         />
         <LoadDialog onLoad={handleLoad} />
+        <HelpDialog />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="col-span-1">
           <SortableFunctionList />
         </div>

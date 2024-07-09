@@ -11,6 +11,55 @@ import { Input } from "@ui/input";
 import { useSavedFunctions } from "./saved-functions.context";
 import { FunctionInfo } from "@repo/parser";
 import { VariableInfoWithIndex } from "./functions";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+
+export const HelpDialog: React.FC = () => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="icon">
+          <QuestionMarkCircledIcon className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>How to use CodeGenerator</DialogTitle>
+        </DialogHeader>
+        <div className="mt-4 space-y-4">
+          <section>
+            <h3 className="font-semibold">Searching for Functions</h3>
+            <p>
+              Use the "Search Codebase" button or press ⌘K to open the search
+              dialog. Type to find functions in your codebase.
+            </p>
+          </section>
+          <section>
+            <h3 className="font-semibold">Adding Functions</h3>
+            <p>
+              Click "Add" next to a search result or use the keyboard shortcut
+              ⌘⌥[1-9] to add functions to your generator.
+            </p>
+          </section>
+          <section>
+            <h3 className="font-semibold">Generating Code</h3>
+            <p>
+              As you add functions, the generator will automatically create a
+              new function that combines them.
+            </p>
+          </section>
+          <section>
+            <h3 className="font-semibold">Saving and Loading</h3>
+            <p>
+              Use the "Save" button to store your current function combination.
+              Load saved combinations using the "Load Saved Functions" button or
+              ⌘O shortcut.
+            </p>
+          </section>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 interface SaveDialogProps {
   onSave: (name: string) => void;
@@ -99,12 +148,16 @@ export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      console.log(savedFunctions.length);
+
       if (
         (event.metaKey || event.ctrlKey) &&
-        event.key === "o" &&
+        event.key.toLowerCase() === "o" &&
         savedFunctions.length > 0
       ) {
         event.preventDefault();
+        console.log("opening load dialog");
+
         setLoadDialogOpen(true);
       }
     };
