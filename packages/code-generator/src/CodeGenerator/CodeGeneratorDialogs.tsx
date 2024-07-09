@@ -148,15 +148,12 @@ export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      console.log(savedFunctions.length);
-
       if (
         (event.metaKey || event.ctrlKey) &&
         event.key.toLowerCase() === "o" &&
         savedFunctions.length > 0
       ) {
         event.preventDefault();
-        console.log("opening load dialog");
 
         setLoadDialogOpen(true);
       }
@@ -164,7 +161,7 @@ export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [open, onLoad, savedFunctions]);
 
   return (
     <>
