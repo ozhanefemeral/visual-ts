@@ -40,7 +40,6 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
           !!searchResults[index].functionInfo
         ) {
           onAddFunction(searchResults[index].functionInfo);
-          setOpen(false);
         }
       }
     };
