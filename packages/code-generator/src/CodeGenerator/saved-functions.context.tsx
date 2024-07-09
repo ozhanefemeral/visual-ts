@@ -22,7 +22,6 @@ interface SavedFunctionsContextType {
     functions: FunctionInfo[],
     variables: VariableInfoWithIndex[]
   ) => void;
-  loadSavedState: (state: SavedFunctionState) => void;
   deleteSavedState: (name: string) => void;
 }
 
@@ -61,10 +60,6 @@ export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
     );
   };
 
-  const loadSavedState = (state: SavedFunctionState) => {
-    // This function will be implemented in the CodeGenerator component
-  };
-
   const deleteSavedState = (name: string) => {
     const updatedSavedFunctions = savedFunctions.filter(
       (func) => func.name !== name
@@ -88,7 +83,6 @@ export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
         saveName,
         setSaveName,
         saveCurrentState,
-        loadSavedState,
         deleteSavedState,
       }}
     >
