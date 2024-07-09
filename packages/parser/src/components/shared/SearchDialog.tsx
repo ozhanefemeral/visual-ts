@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect } from "react";
 import { FunctionInfo, SearchResult } from "@repo/parser";
 import {
@@ -9,12 +8,12 @@ import {
   DialogTrigger,
 } from "@ui/dialog";
 import { Input } from "@ui/input";
-import { Separator } from "@ui/separator";
 import { Button } from "@ui/button";
 
 interface SearchDialogProps {
   onAddFunction: (functionInfo: FunctionInfo) => void;
 }
+
 const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,15 +22,32 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setOpen(true);
+      }
+      if (
+        open &&
+        event.altKey &&
+        (event.metaKey || event.ctrlKey) &&
+        event.key >= "1" &&
+        event.key <= "9"
+      ) {
+        event.preventDefault();
+        const index = parseInt(event.key) - 1;
+        if (
+          index < searchResults.length &&
+          !!searchResults[index].functionInfo
+        ) {
+          onAddFunction(searchResults[index].functionInfo);
+          setOpen(false);
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [open, searchResults, onAddFunction]);
 
   useEffect(() => {
     const search = async () => {
@@ -41,7 +57,9 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
           `/api/search?q=${encodeURIComponent(searchQuery)}`
         );
         const results = await response.json();
-        setSearchResults(results);
+        setSearchResults(
+          results.filter((result: any) => result.type === "function")
+        );
         setIsLoading(false);
       } else {
         setSearchResults([]);
@@ -51,15 +69,6 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
     const debounce = setTimeout(search, 300);
     return () => clearTimeout(debounce);
   }, [searchQuery]);
-
-  const groupedResults = searchResults.reduce(
-    (acc, result) => {
-      if (!acc[result.type]) acc[result.type] = [];
-      acc[result.type].push(result);
-      return acc;
-    },
-    {} as Record<string, SearchResult[]>
-  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -71,7 +80,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
           <DialogTitle>Search Codebase</DialogTitle>
         </DialogHeader>
         <Input
-          placeholder="Search for functions, components, types..."
+          placeholder="Search for functions..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="my-4"
@@ -88,31 +97,27 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onAddFunction }) => {
               No results found. Did you break the code again?
             </p>
           ) : (
-            Object.entries(groupedResults).map(([type, results]) => (
-              <div key={type} className="mb-4">
-                <h3 className="text-sm font-semibold text-gray-500 mb-2 capitalize">
-                  {type}s
-                </h3>
-                {results.map((result, index) => (
-                  <React.Fragment key={result.name}>
-                    <div className="flex items-center justify-between">
-                      <div className="py-2">
-                        <p className="font-medium">{result.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {result.filePath}
-                        </p>
-                      </div>
-                      {!!result.functionInfo && (
-                        <Button
-                          onClick={() => onAddFunction(result.functionInfo!)}
-                        >
-                          Add
-                        </Button>
-                      )}
-                    </div>
-                    {index < results.length - 1 && <Separator />}
-                  </React.Fragment>
-                ))}
+            searchResults.map((result, index) => (
+              <div
+                key={result.name}
+                className="flex items-center justify-between mb-2"
+              >
+                <div className="py-2">
+                  <p className="font-medium">
+                    <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">
+                      ⌘ + ⌥ + {index + 1}
+                    </kbd>{" "}
+                    {result.name}
+                  </p>
+                  <p className="pt-2 text-sm text-gray-500">
+                    {result.filePath}
+                  </p>
+                </div>
+                {!!result.functionInfo && (
+                  <Button onClick={() => onAddFunction(result.functionInfo!)}>
+                    Add
+                  </Button>
+                )}
               </div>
             ))
           )}
