@@ -161,7 +161,7 @@ export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, onLoad, savedFunctions]);
+  }, [loadDialogOpen, onLoad, savedFunctions]);
 
   return (
     <>
