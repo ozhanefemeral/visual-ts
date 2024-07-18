@@ -16,11 +16,13 @@
     "typescript": "^5.5.3"
   },
   "peerDependencies": {
-    "ts-morph": "^23.0.0"
+    "ts-morph": "^23.0.0",
+    "typescript": "^5.0.0"
   },
   "tsup": {
     "external": [
-      "ts-morph"
+      "ts-morph",
+      "typescript"
     ]
   },
   "files": [
