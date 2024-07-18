@@ -6,14 +6,24 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build": "tsup src/index.ts --format cjs,esm --dts --minify --clean",
     "release": "pnpm run build && changeset publish",
     "lint": "tsc"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
-    "ts-morph": "^23.0.0",
     "tsup": "^8.1.2",
     "typescript": "^5.5.3"
-  }
+  },
+  "peerDependencies": {
+    "ts-morph": "^23.0.0"
+  },
+  "tsup": {
+    "external": [
+      "ts-morph"
+    ]
+  },
+  "files": [
+    "dist"
+  ]
 }
