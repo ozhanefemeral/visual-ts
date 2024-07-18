@@ -1,5 +1,11 @@
 # @ozhanefe/ts-codegenerator
 
+## 1.2.0
+
+### Minor Changes
+
+- 5c378f7: Add code generation functionality and optimize build size.
+
 ## 1.1.0
 
 ### Minor Changes
