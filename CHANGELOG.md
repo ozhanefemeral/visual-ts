@@ -1,5 +1,11 @@
 # @ozhanefe/ts-codegenerator
 
+## 1.1.0
+
+### Minor Changes
+
+- c2c2ccc: fix: reduce package size and optimize build process
+
 ## 1.0.0
 
 ### Major Changes
