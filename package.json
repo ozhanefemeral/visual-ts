@@ -1,5 +1,5 @@
 {
-  "name": "@ozhanefemeral/ts-generator",
+  "name": "@ozhanefe/ts-codegenerator",
   "license": "MIT",
   "version": "0.0.1",
   "main": "dist/index.js",
