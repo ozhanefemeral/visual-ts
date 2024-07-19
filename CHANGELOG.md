@@ -1,5 +1,15 @@
 # @ozhanefe/ts-codegenerator
 
+## 1.3.0
+
+### Minor Changes
+
+- ddc7954: Add Jest and implement test scenarios
+
+### Patch Changes
+
+- 2968ce0: Add @types/node dependency
+
 ## 1.2.1
 
 ### Patch Changes
