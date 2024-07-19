@@ -1,7 +1,7 @@
 import { Node, Project } from "ts-morph";
 import type { FunctionInfo } from "./types";
 import { getFunctionVariables } from "./utils";
-
+import fs from "fs";
 export function getFunctionInfoFromNode(node: Node): FunctionInfo | null {
   if (Node.isFunctionDeclaration(node)) {
     const name = node.getName() || "anonymous";
@@ -27,30 +27,33 @@ export function getFunctionInfoFromNode(node: Node): FunctionInfo | null {
   return null;
 }
 
-export function parseFunctionsFromFile(filePath: string) {
+export function parseFunctionsFromText(sourceCode: string): {
+  functionsInfo: FunctionInfo[];
+  usedTypes: string[];
+} {
   const project = new Project();
-  const sourceFile = project.addSourceFileAtPath(filePath);
-  const functionsInfo: Array<FunctionInfo> = [];
-  const usedTypes: Array<string> = [];
+  const sourceFile = project.createSourceFile("temp.ts", sourceCode);
 
-  function visit(node: Node) {
+  const functionsInfo: FunctionInfo[] = [];
+  const usedTypes: string[] = [];
+
+  sourceFile.forEachDescendant((node) => {
     const functionInfo = getFunctionInfoFromNode(node);
     if (functionInfo) {
       functionsInfo.push(functionInfo);
-
-      // Traverse the function body to find used variables
-      node.forEachDescendant((descendant) => {
-        if (Node.isIdentifier(descendant)) {
-          const variableName = descendant.getText();
-          usedTypes.push(variableName);
-        }
-      });
+      // Extract used types from function info
+      if (functionInfo.returnType) usedTypes.push(functionInfo.returnType);
+      functionInfo.parameters?.forEach((param) => usedTypes.push(param.type));
     }
-
-    node.forEachChild(visit);
-  }
-
-  visit(sourceFile);
+  });
 
   return { functionsInfo, usedTypes };
+}
+
+export function parseFunctionsFromFile(filePath: string): {
+  functionsInfo: FunctionInfo[];
+  usedTypes: string[];
+} {
+  const sourceCode = fs.readFileSync(filePath, "utf-8");
+  return parseFunctionsFromText(sourceCode);
 }
