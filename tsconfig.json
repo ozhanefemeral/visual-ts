@@ -2,6 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "declaration": true,
     "target": "es2022",
     "verbatimModuleSyntax": false,
     "allowJs": true,
