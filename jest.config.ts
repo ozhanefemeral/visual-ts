@@ -5,6 +5,10 @@ const config: Config.InitialOptions = {
   testEnvironment: "node",
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "/__tests__/scanner-mock-codebase/",
+  ],
   transform: {
     "^.+\\.ts$": [
       "ts-jest",
@@ -14,7 +18,7 @@ const config: Config.InitialOptions = {
     ],
   },
   moduleFileExtensions: ["ts", "js", "json", "node"],
-  moduleDirectories: ["node_modules", "src"],
+  modulePaths: ["<rootDir>", "<rootDir>/src"],
 };
 
 export default config;
