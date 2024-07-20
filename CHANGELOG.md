@@ -1,5 +1,11 @@
 # @ozhanefe/ts-codegenerator
 
+## 1.4.0
+
+### Minor Changes
+
+- 70884f5: add scanning feature and tests
+
 ## 1.3.0
 
 ### Minor Changes
