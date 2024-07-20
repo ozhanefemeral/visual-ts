@@ -1,5 +1,11 @@
 # @ozhanefe/ts-codegenerator
 
+## 1.5.0
+
+### Minor Changes
+
+- 8304076: add type exports
+
 ## 1.4.0
 
 ### Minor Changes
