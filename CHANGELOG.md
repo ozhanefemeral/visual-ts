@@ -1,5 +1,11 @@
 # @ozhanefe/ts-codegenerator
 
+## 1.5.1
+
+### Patch Changes
+
+- 25b4665: add 'declaration' field to tsconfig
+
 ## 1.5.0
 
 ### Minor Changes
