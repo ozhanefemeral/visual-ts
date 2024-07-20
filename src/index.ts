@@ -6,6 +6,14 @@ export {
   generateCode,
 } from "./functions";
 
-export type { VariableInfoWithIndex } from "./types";
+export type {
+  VariableInfoWithIndex,
+  CodebaseInfo,
+  FileParserProps,
+  FunctionInfo,
+  ModuleInfoFields,
+  TypeInfo,
+  VariableInfo,
+} from "./types";
 
 export { scanCodebase } from "./codebase-scanner";
