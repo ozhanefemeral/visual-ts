@@ -1,5 +1,5 @@
 import { Node, SourceFile } from "ts-morph";
-import type { VariableInfo } from "./types";
+import type { VariableInfo } from "../types";
 
 function parseVariables(node: Node): VariableInfo[] {
   const variables: VariableInfo[] = [];

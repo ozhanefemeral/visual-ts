@@ -7,3 +7,5 @@ export {
 } from "./functions";
 
 export type { VariableInfoWithIndex } from "./types";
+
+export { scanCodebase } from "./codebase-scanner";

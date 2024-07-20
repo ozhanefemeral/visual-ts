@@ -5,8 +5,7 @@ import {
   extractVariables,
   generateCode,
 } from "../functions";
-import { FunctionInfo } from "../module-parser/types";
-import { VariableInfoWithIndex } from "../types";
+import { FunctionInfo, VariableInfoWithIndex } from "../types";
 
 describe("Code Generator Functions", () => {
   const mockFunctionInfo: FunctionInfo = {

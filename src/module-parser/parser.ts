@@ -1,5 +1,5 @@
 import { Node, Project } from "ts-morph";
-import type { FunctionInfo } from "./types";
+import type { FunctionInfo } from "../types";
 import { getFunctionVariables } from "./utils";
 import fs from "fs";
 export function getFunctionInfoFromNode(node: Node): FunctionInfo | null {

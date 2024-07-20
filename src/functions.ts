@@ -14,8 +14,7 @@ import type {
   VariableDeclaration,
   VariableStatement,
 } from "typescript";
-import type { FunctionInfo } from "./module-parser/types";
-import type { VariableInfoWithIndex } from "./types";
+import type { FunctionInfo, VariableInfoWithIndex } from "./types";
 
 const PROMISE_PREFIX = "Promise<";
 
