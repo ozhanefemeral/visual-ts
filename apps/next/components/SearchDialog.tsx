@@ -9,7 +9,7 @@ import {
 } from "@ui/dialog";
 import { Input } from "@ui/input";
 import { Button } from "@ui/button";
-import { CodebaseInfo } from "@ozhanefe/ts-codegenerator/src/index";
+import { CodebaseInfo } from "@ozhanefe/ts-codegenerator";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { KeyCombinationLabel } from "@ui/key-combination-label";
 

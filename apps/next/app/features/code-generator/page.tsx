@@ -1,7 +1,7 @@
 import path from "path";
 import { CodeGenerator } from "./CodeGenerator";
 import { SearchDialog } from "@/components/SearchDialog";
-import { scanCodebase } from "@ozhanefe/ts-codegenerator/src/index";
+import { scanCodebase } from "@ozhanefe/ts-codegenerator";
 import { HelpDialog, LoadDialog } from "./Dialogs";
 
 export default function CodeGeneratorPage() {

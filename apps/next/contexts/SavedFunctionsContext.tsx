@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   FunctionInfo,
   VariableInfoWithIndex,
-} from "@ozhanefe/ts-codegenerator/src/index";
+} from "@ozhanefe/ts-codegenerator";
 
 interface SavedFunctionState {
   name: string;

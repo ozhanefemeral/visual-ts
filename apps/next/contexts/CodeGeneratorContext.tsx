@@ -3,7 +3,7 @@ import {
   VariableInfoWithIndex,
   extractVariables,
   generateCode,
-} from "@ozhanefe/ts-codegenerator/src/index";
+} from "@ozhanefe/ts-codegenerator";
 import {
   PropsWithChildren,
   createContext,

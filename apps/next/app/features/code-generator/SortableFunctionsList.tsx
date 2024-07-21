@@ -1,6 +1,6 @@
 import React from "react";
 import { useCodeGenerator } from "@contexts/CodeGeneratorContext";
-import { FunctionInfo } from "@ozhanefe/ts-codegenerator/src/index";
+import { FunctionInfo } from "@ozhanefe/ts-codegenerator";
 import {
   DndContext,
   closestCenter,
