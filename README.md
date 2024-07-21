@@ -1,12 +1,8 @@
-# ts-generator
+# VisualTS
 
-A powerful TypeScript utility for parsing and generating code, now with visual development tools!
+A powerful React/Next.js visual code generator for TypeScript projects. Built on top of the ts-generator package.
 
 ![code-generator](https://github.com/ozhanefemeral/visual-ts/assets/22786810/68d5f1ea-84dd-4955-abf9-81b3e0e5b1d3)
-
-## Overview
-
-The ts-generator project provides tools for parsing TypeScript code, generating new code based on parsed information, and visualizing TypeScript/React components. It aims to enhance developer productivity through code analysis, generation, and visual exploration of codebases.
 
 ## Key Features
 
@@ -37,6 +33,8 @@ npm install @ozhanefe/ts-generator
 yarn add @ozhanefe/ts-generator
 # or
 pnpm add @ozhanefe/ts-generator
+# or
+bun add @ozhanefe/ts-generator
 ```
 
 Note: This package requires TypeScript as a peer dependency.
@@ -74,7 +72,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Roadmap
 
 Check out our [roadmap](https://visual-ts.vercel.app/roadmap) to see what's coming next.
-
-## License
-
-[MIT](LICENSE)
