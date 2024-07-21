@@ -8,9 +8,10 @@
     ],
     "paths": {
       "@/*": ["./*"],
+      "@components/*": ["./components/*"],
+      "@contexts/*": ["./contexts/*"],
       "@ui/*": ["../../packages/ui/src/*"],
-      "@parser/*": ["../../packages/parser/src/*"],
-      "@code-generator/*": ["../../packages/code-generator/src/*"]
+      "@code-generator/*": ["../../packages/ts-codegenerator/src/*"]
     }
   },
   "include": [

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { FunctionInfo } from "@repo/parser";
-import { VariableInfoWithIndex } from "./functions";
+import {
+  FunctionInfo,
+  VariableInfoWithIndex,
+} from "@ozhanefe/ts-codegenerator/src/index";
 
 interface SavedFunctionState {
   name: string;

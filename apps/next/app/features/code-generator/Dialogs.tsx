@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,10 +9,10 @@ import {
 } from "@ui/dialog";
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
-import { useSavedFunctions } from "./saved-functions.context";
-import { FunctionInfo } from "@repo/parser";
-import { VariableInfoWithIndex } from "./functions";
+import { useSavedFunctions } from "@contexts/SavedFunctionsContext";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
+import { KeyCombinationLabel } from "@ui/key-combination-label";
 
 export const HelpDialog: React.FC = () => {
   return (
@@ -29,15 +30,15 @@ export const HelpDialog: React.FC = () => {
           <section>
             <h3 className="font-semibold">Searching for Functions</h3>
             <p>
-              Use the "Search Codebase" button or press ⌘K to open the search
-              dialog. Type to find functions in your codebase.
+              Use the &ldquo;Search Codebase&rdquo; button or press ⌘K to open
+              the search dialog. Type to find functions in your codebase.
             </p>
           </section>
           <section>
             <h3 className="font-semibold">Adding Functions</h3>
             <p>
-              Click "Add" next to a search result or use the keyboard shortcut
-              ⌘⌥[1-9] to add functions to your generator.
+              Click &ldquo;Add&rdquo; next to a search result or use the
+              keyboard shortcut ⌥[1-9] to add functions to your generator.
             </p>
           </section>
           <section>
@@ -50,9 +51,9 @@ export const HelpDialog: React.FC = () => {
           <section>
             <h3 className="font-semibold">Saving and Loading</h3>
             <p>
-              Use the "Save" button to store your current function combination.
-              Load saved combinations using the "Load Saved Functions" button or
-              ⌘O shortcut.
+              Use the &ldquo;Save&rdquo; button to store your current function
+              combination. Load saved combinations using the Load Saved
+              Functions&rdquo; button or ⌘O shortcut.
             </p>
           </section>
         </div>
@@ -70,12 +71,12 @@ export const SaveDialog: React.FC<SaveDialogProps> = ({ onSave, isEmpty }) => {
   const { saveDialogOpen, setSaveDialogOpen, saveName, setSaveName } =
     useSavedFunctions();
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (saveName.trim() === "") return;
     onSave(saveName);
     setSaveDialogOpen(false);
     setSaveName("");
-  };
+  }, [saveName, onSave, setSaveDialogOpen, setSaveName]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -86,7 +87,7 @@ export const SaveDialog: React.FC<SaveDialogProps> = ({ onSave, isEmpty }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [saveDialogOpen, saveName]);
+  }, [saveDialogOpen, saveName, handleSave]);
 
   return (
     <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
@@ -111,15 +112,7 @@ export const SaveDialog: React.FC<SaveDialogProps> = ({ onSave, isEmpty }) => {
   );
 };
 
-interface LoadDialogProps {
-  onLoad: (state: {
-    name: string;
-    functions: FunctionInfo[];
-    variables: VariableInfoWithIndex[];
-  }) => void;
-}
-
-export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
+export const LoadDialog: React.FC = () => {
   const {
     savedFunctions,
     loadDialogOpen,
@@ -128,6 +121,16 @@ export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
   } = useSavedFunctions();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [functionToDelete, setFunctionToDelete] = useState<string | null>(null);
+  const { setFunctions, setVariables } = useCodeGenerator();
+
+  const handleLoad = useCallback(
+    (index: number) => {
+      setFunctions(savedFunctions[index].functions);
+      setVariables(savedFunctions[index].variables);
+      setLoadDialogOpen(false);
+    },
+    [savedFunctions, setFunctions, setVariables, setLoadDialogOpen]
+  );
 
   const handleDelete = (name: string) => {
     setFunctionToDelete(name);
@@ -148,20 +151,28 @@ export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        (event.metaKey || event.ctrlKey) &&
-        event.key.toLowerCase() === "o" &&
-        savedFunctions.length > 0
-      ) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "o") {
         event.preventDefault();
-
-        setLoadDialogOpen(true);
+        if (savedFunctions.length > 0) {
+          setLoadDialogOpen(true);
+        }
+      }
+      if (loadDialogOpen) {
+        if (event.altKey && event.key >= "1" && event.key <= "9") {
+          event.preventDefault();
+          const index = parseInt(event.key) - 1;
+          if (index < savedFunctions.length) {
+            handleLoad(index);
+          }
+        } else if (event.key === "Escape") {
+          setLoadDialogOpen(false);
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [loadDialogOpen, onLoad, savedFunctions]);
+  }, [loadDialogOpen, savedFunctions, setLoadDialogOpen, handleLoad]);
 
   return (
     <>
@@ -181,9 +192,13 @@ export const LoadDialog: React.FC<LoadDialogProps> = ({ onLoad }) => {
                 key={index}
                 className="flex justify-between items-center mb-2"
               >
-                <span>{savedFunc.name}</span>
+                <p className="font-medium">
+                  <KeyCombinationLabel>⌥ + {index + 1}</KeyCombinationLabel>
+                  &nbsp;
+                  {savedFunc.name}
+                </p>
                 <div>
-                  <Button onClick={() => onLoad(savedFunc)} className="mr-2">
+                  <Button onClick={() => handleLoad(index)} className="mr-2">
                     Load
                   </Button>
                   <Button

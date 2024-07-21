@@ -1,4 +1,9 @@
-import { FunctionInfo } from "@repo/parser";
+import {
+  FunctionInfo,
+  VariableInfoWithIndex,
+  extractVariables,
+  generateCode,
+} from "@ozhanefe/ts-codegenerator/src/index";
 import {
   PropsWithChildren,
   createContext,
@@ -6,11 +11,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  VariableInfoWithIndex,
-  extractVariables,
-  generateCode,
-} from "./functions";
+
 import { createProject, ts, Project } from "@ts-morph/bootstrap";
 
 interface Context {

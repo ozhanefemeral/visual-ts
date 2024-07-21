@@ -12,7 +12,6 @@
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
-    "@repo/parser": "*",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^15.0.7",
     "@types/jest": "^29.5.12",
@@ -29,9 +28,5 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "dependencies": {
-    "@ts-morph/bootstrap": "^0.23.0",
-    "ts-morph": "^22.0.0"
-  }
+  ]
 }

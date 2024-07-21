@@ -1,6 +1,6 @@
 import React from "react";
-import { useCodeGenerator } from "./context";
-import { FunctionInfo } from "@repo/parser";
+import { useCodeGenerator } from "@contexts/CodeGeneratorContext";
+import { FunctionInfo } from "@ozhanefe/ts-codegenerator/src/index";
 import {
   DndContext,
   closestCenter,
@@ -93,6 +93,7 @@ export const SortableFunctionList: React.FC = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    console.log(event);
 
     if (over && active.id !== over.id) {
       const oldIndex = Number(active.id) - 1;
@@ -109,6 +110,8 @@ export const SortableFunctionList: React.FC = () => {
     ...func,
     id: index + 1,
   }));
+
+  console.log(functionsWithId);
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
