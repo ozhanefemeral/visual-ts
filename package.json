@@ -1,13 +1,16 @@
 {
-  "name": "visual-ts",
+  "name": "ts-generator-monorepo",
   "private": true,
+  "version": "1.5.1",
+  "license": "MIT",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "jest",
-    "test:watch": "turbo run test:watch"
+    "test": "turbo test",
+    "test:watch": "turbo run test:watch",
+    "release": "changeset publish"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
@@ -19,7 +22,17 @@
     "prettier": "^3.2.5",
     "turbo": "latest",
     "eslint": "^8.57.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.5.3",
+    "@changesets/cli": "^2.27.7",
+    "@jest/types": "^29.6.3",
+    "@types/node": "^20.14.11",
+    "jest-mock-fs": "^1.0.2",
+    "ts-jest": "^29.2.3",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.1.2"
+  },
+  "peerDependencies": {
+    "ts-morph": "^23.0.0"
   },
   "engines": {
     "node": ">=18"
