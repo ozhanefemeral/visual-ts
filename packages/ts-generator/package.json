@@ -1,0 +1,42 @@
+{
+  "name": "@ozhanefe/ts-codegenerator",
+  "license": "MIT",
+  "version": "1.5.1",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --minify --clean",
+    "release": "pnpm run build && changeset publish",
+    "lint": "tsc",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "@jest/types": "^29.6.3",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.11",
+    "jest": "^29.7.0",
+    "jest-mock-fs": "^1.0.2",
+    "ts-jest": "^29.2.3",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.1.2",
+    "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "ts-morph": "^23.0.0",
+    "typescript": "^5.0.0"
+  },
+  "tsup": {
+    "external": [
+      "ts-morph",
+      "typescript",
+      "react",
+      "react-dom",
+      "next"
+    ]
+  },
+  "files": [
+    "dist"
+  ]
+}
