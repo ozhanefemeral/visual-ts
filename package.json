@@ -9,13 +9,11 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "test": "turbo test",
-    "test:watch": "turbo run test:watch",
-    "release": "changeset publish"
+    "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
-    "@ozhanefe/ts-codegenerator": "*",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^15.0.7",
     "@types/jest": "^29.5.12",
@@ -24,16 +22,11 @@
     "turbo": "latest",
     "eslint": "^8.57.0",
     "typescript": "^5.5.3",
-    "@changesets/cli": "^2.27.7",
     "@jest/types": "^29.6.3",
     "@types/node": "^20.14.11",
     "jest-mock-fs": "^1.0.2",
     "ts-jest": "^29.2.3",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.1.2"
-  },
-  "peerDependencies": {
-    "ts-morph": "^23.0.0"
+    "ts-node": "^10.9.2"
   },
   "engines": {
     "node": ">=18"
