@@ -1,4 +1,4 @@
-import { FunctionInfo } from "types";
+import { FunctionInfo } from "../types";
 
 export interface ServerActionInfo extends FunctionInfo {
   filePath: string;
