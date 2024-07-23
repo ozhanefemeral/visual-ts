@@ -1,9 +1,5 @@
 import { Project, SyntaxKind } from "ts-morph";
-import {
-  getFunctionInfoFromNode,
-  parseFunctionsFromFile,
-  parseFunctionsFromText,
-} from "../parser";
+import { getFunctionInfoFromNode, parseFunctionsFromText } from "../parser";
 
 describe("Module Parser", () => {
   describe("parseFunctionsFromText", () => {
