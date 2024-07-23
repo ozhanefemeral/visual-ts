@@ -17,3 +17,7 @@ export type {
 } from "./types";
 
 export { scanCodebase } from "./codebase-scanner";
+
+export type { NextCodebaseInfo, ServerActionInfo } from "./nextjs";
+export { scanNextjsCodebase, generateServerAction } from "./nextjs";
+export * as NextJS from "./nextjs";
