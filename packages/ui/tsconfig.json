@@ -4,8 +4,10 @@
     "baseUrl": ".",
     "paths": {
       "@ui/*": ["./src/*"]
-    }
+    },
+    "types": ["jest"],
+    "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src", "tailwind.config.ts", "turbo"],
   "exclude": ["node_modules", "dist"]
 }
