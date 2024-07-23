@@ -1,5 +1,5 @@
-import { Project, Node, Type, Symbol as TsSymbol } from "ts-morph";
-import { FunctionInfo, TypeInfo, CodebaseInfo } from "./types";
+import { Node, Project } from "ts-morph";
+import { CodebaseInfo, FunctionInfo, TypeInfo } from "./types";
 
 export function scanCodebase(projectPath: string): CodebaseInfo {
   const project = new Project();

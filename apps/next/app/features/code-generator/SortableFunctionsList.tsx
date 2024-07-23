@@ -22,6 +22,7 @@ import { CSS } from "@dnd-kit/utilities";
 type SortableItemProps = {
   func: FunctionInfo;
   index: number;
+  // eslint-disable-next-line no-unused-vars
   onRemove: (index: number) => void;
 };
 

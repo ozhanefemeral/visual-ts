@@ -1,6 +1,6 @@
-import { scanCodebase } from "../codebase-scanner";
-import { CodebaseInfo, FunctionInfo, TypeInfo } from "../types";
 import * as path from "path";
+import { scanCodebase } from "../codebase-scanner";
+import { CodebaseInfo } from "../types";
 
 describe("Codebase Scanner", () => {
   it("should scan codebase", () => {

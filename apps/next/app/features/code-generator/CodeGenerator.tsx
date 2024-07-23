@@ -8,8 +8,7 @@ import { SaveDialog } from "./Dialogs";
 import { CodeViewer } from "@/components/CodeViewer";
 
 export const CodeGenerator: React.FC = () => {
-  const { functions, setFunctions, variables, setVariables, code } =
-    useCodeGenerator();
+  const { functions, setFunctions, variables, code } = useCodeGenerator();
   const { saveCurrentState } = useSavedFunctions();
 
   const isEmpty = functions.length === 0;
