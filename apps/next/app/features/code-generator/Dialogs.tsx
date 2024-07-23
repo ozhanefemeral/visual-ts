@@ -63,6 +63,7 @@ export const HelpDialog: React.FC = () => {
 };
 
 interface SaveDialogProps {
+  // eslint-disable-next-line no-unused-vars
   onSave: (name: string) => void;
   isEmpty: boolean;
 }
@@ -87,7 +88,7 @@ export const SaveDialog: React.FC<SaveDialogProps> = ({ onSave, isEmpty }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [saveDialogOpen, saveName, handleSave]);
+  }, [saveDialogOpen, handleSave]);
 
   return (
     <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
