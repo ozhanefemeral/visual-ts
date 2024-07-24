@@ -13,10 +13,10 @@
 
 ## Installation
 
-Install the package using pnpm:
+Install the package using bun:
 
 ```bash
-pnpm add @ozhanefe/ts-codegenerator
+bun add @ozhanefe/ts-codegenerator
 ```
 
 Note: This package requires TypeScript as a peer dependency. Make sure you have TypeScript installed in your project.
