@@ -9,11 +9,12 @@ export {
 export type {
   VariableInfoWithIndex,
   CodebaseInfo,
-  FileParserProps,
   FunctionInfo,
   ModuleInfoFields,
   TypeInfo,
   VariableInfo,
+  Block,
+  FunctionCallBlock,
 } from "./types";
 
 export { scanCodebase } from "./codebase-scanner";
