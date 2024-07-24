@@ -1,5 +1,13 @@
 # @ozhanefe/ts-codegenerator
 
+## 1.8.0
+
+### Minor Changes
+
+- ae4b8ad: add eslint config
+- ae4b8ad: nextjs support
+- ae4b8ad: add nextjs parsing/generator features
+
 ## 1.7.0
 
 ### Minor Changes
