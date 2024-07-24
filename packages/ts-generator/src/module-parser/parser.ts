@@ -1,7 +1,6 @@
 import { Node, Project } from "ts-morph";
 import type { FunctionInfo } from "../types";
 import { getFunctionVariables } from "./utils";
-import fs from "fs";
 export function getFunctionInfoFromNode(node: Node): FunctionInfo | null {
   if (Node.isFunctionDeclaration(node)) {
     const name = node.getName() || "anonymous";
@@ -48,12 +47,4 @@ export function parseFunctionsFromText(sourceCode: string): {
   });
 
   return { functionsInfo, usedTypes };
-}
-
-export function parseFunctionsFromFile(filePath: string): {
-  functionsInfo: FunctionInfo[];
-  usedTypes: string[];
-} {
-  const sourceCode = fs.readFileSync(filePath, "utf-8");
-  return parseFunctionsFromText(sourceCode);
 }
