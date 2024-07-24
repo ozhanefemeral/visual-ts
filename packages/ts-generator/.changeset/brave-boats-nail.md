@@ -1,5 +1,5 @@
 ---
-"@ozhanefe/ts-codegenerator": major
+"@ozhanefe/ts-codegenerator": minor
 ---
 
 add eslint config
