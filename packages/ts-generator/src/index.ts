@@ -4,7 +4,11 @@ export {
   createVariableWithFunctionCall,
   extractVariables,
   generateCode,
-} from "./functions";
+  blockToTypeScript,
+  extractReturnType,
+  findVariableByType,
+  getUniqueVariableName,
+} from "./generator";
 
 export type {
   VariableInfoWithIndex,
