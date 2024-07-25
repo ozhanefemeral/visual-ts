@@ -24,8 +24,12 @@ jobs:
       - name: Clear bun cache
         run: bun pm cache clean
 
+      - name: Patch package.json
+        run: |
+          sed -i 's/"@ozhanefe\/ts-codegenerator": "workspace:*"/"@ozhanefe\/ts-codegenerator": "1.8.0"/' package.json  
+
       - name: Install dependencies
-        run: bun install --no-workspace
+        run: bun install
 
       - name: Lint
         run: bun run lint
