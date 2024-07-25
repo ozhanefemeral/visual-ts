@@ -5,6 +5,7 @@ import {
   PROMISE_PREFIX,
 } from "generator/utils";
 import { FunctionCallBlock, FunctionInfo, VariableInfoWithIndex } from "types";
+import { CodeGeneratorState } from "types/generator";
 import {
   AwaitExpression,
   CallExpression,
@@ -24,29 +25,17 @@ import {
  */
 export function createVariableWithFunctionCall(
   block: FunctionCallBlock,
-  variables: VariableInfoWithIndex[]
+  state: CodeGeneratorState | { variables: VariableInfoWithIndex[] }
 ): VariableStatement {
-  const { functionInfo } = block;
-  const variableName = functionInfo.name.toLowerCase();
-  const newVariableName = getUniqueVariableName(variableName, variables);
-  const index = block.index;
-
-  const newVariable: VariableInfoWithIndex = {
-    name: newVariableName,
-    type: extractReturnType(functionInfo.returnType),
-    index: index,
-  };
-  variables.push(newVariable);
-
   return factory.createVariableStatement(
     undefined,
     factory.createVariableDeclarationList(
       [
         createVariableDeclaration(
-          newVariableName,
-          functionInfo,
-          variables,
-          index
+          block.returnVariable?.name,
+          block.functionInfo,
+          state.variables,
+          block.index
         ),
       ],
       NodeFlags.Const
@@ -138,4 +127,54 @@ function createVariableDeclaration(
     undefined,
     createFunctionCall(functionInfo, variables, index)
   );
+}
+
+/**
+ * Creates a function call block.
+ *
+ * @param {FunctionInfo} functionInfo - Information about the function to call.
+ * @param {CodeGeneratorState} state - The current state of the code generator.
+ * @return {FunctionCallBlock} The created function call block.
+ */
+export function createFunctionCallBlock(
+  functionInfo: FunctionInfo,
+  state: CodeGeneratorState
+): FunctionCallBlock {
+  const index = state.blocks.length;
+
+  const variableName = functionInfo.name.toLowerCase();
+  const newVariableName = getUniqueVariableName(variableName, state.variables);
+
+  const newVariable: VariableInfoWithIndex = {
+    name: newVariableName,
+    type: extractReturnType(functionInfo.returnType),
+    index: index,
+  };
+  const block: FunctionCallBlock = {
+    functionInfo,
+    parameters: functionInfo.parameters,
+    returnVariable: newVariable,
+    isAsync: !!functionInfo.returnType?.includes(PROMISE_PREFIX),
+    index: index,
+    blockType: "functionCall",
+  };
+
+  state.blocks.push(block);
+  state.variables.push(newVariable);
+
+  return block;
+}
+
+/**
+ * Converts a function call block into a TypeScript variable statement.
+ *
+ * @param {FunctionCallBlock} block - The function call block to convert.
+ * @param {CodeGeneratorState | { variables: VariableInfoWithIndex[] }} state - The state of the code generator.
+ * @return {VariableStatement} The TypeScript variable statement representing the function call block.
+ */
+export function functionCallBlockToTypeScript(
+  block: FunctionCallBlock,
+  state: CodeGeneratorState | { variables: VariableInfoWithIndex[] }
+): VariableStatement {
+  return createVariableWithFunctionCall(block, state);
 }

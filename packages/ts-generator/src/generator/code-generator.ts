@@ -1,4 +1,4 @@
-import { CodeBlock, VariableInfoWithIndex } from "types";
+import { CodeBlock } from "types";
 import {
   factory,
   createPrinter,
@@ -9,17 +9,21 @@ import {
   ScriptTarget,
 } from "typescript";
 import { blockToTypeScript } from "./block-generator";
+import { CodeGeneratorState } from "types/generator";
 
-export function generateCode(codeBlocks: CodeBlock[]): string {
+export function generateCode(blocks: CodeBlock[]): string {
+  const state: CodeGeneratorState = {
+    blocks: blocks,
+    variables: [],
+    isAsync: blocks.some((block) => block.isAsync),
+  };
+
+  const statements: Statement[] = blocks.map((block) =>
+    blockToTypeScript(block, state)
+  );
   const functionName = "generatedFunction";
-  const isAsync = codeBlocks.some((block) => block.isAsync);
-  const variables: VariableInfoWithIndex[] = [];
 
-  let statements: Statement[] = [];
-
-  for (const block of codeBlocks) {
-    statements.push(blockToTypeScript(block, variables));
-  }
+  const isAsync = state.isAsync;
 
   const functionDeclaration = factory.createFunctionDeclaration(
     isAsync ? [factory.createModifier(SyntaxKind.AsyncKeyword)] : undefined,

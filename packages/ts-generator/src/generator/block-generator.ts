@@ -1,14 +1,15 @@
-import { createVariableWithFunctionCall } from "./blocks/function-call";
+import { functionCallBlockToTypeScript } from "./blocks/function-call";
 import { CodeBlock, VariableInfoWithIndex } from "types";
+import { CodeGeneratorState } from "types/generator";
 import { Statement } from "typescript";
 
 export function blockToTypeScript(
   block: CodeBlock,
-  variables: VariableInfoWithIndex[]
+  state: CodeGeneratorState | { variables: VariableInfoWithIndex[] }
 ): Statement {
   switch (block.blockType) {
     case "functionCall":
-      return createVariableWithFunctionCall(block, variables);
+      return functionCallBlockToTypeScript(block, state);
 
     default:
       throw new Error(`Unknown block type: ${block.blockType}`);

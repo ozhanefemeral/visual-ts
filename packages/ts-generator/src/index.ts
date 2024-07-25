@@ -8,6 +8,8 @@ export {
   extractReturnType,
   findVariableByType,
   getUniqueVariableName,
+  createFunctionCallBlock,
+  functionCallBlockToTypeScript,
 } from "./generator";
 
 export type {

@@ -9,7 +9,7 @@ export interface Block {
 export interface FunctionCallBlock extends Block {
   functionInfo: FunctionInfo;
   parameters?: VariableInfo[];
-  returnVariable?: VariableInfo;
+  returnVariable: VariableInfo;
   isAsync: boolean;
   blockType: "functionCall";
 }
