@@ -15,19 +15,24 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
 
-      - name: Clear Bun cache
+      - name: Clear Bun cache and remove node_modules
         run: |
           bun pm cache clean
           rm -rf node_modules
 
-      - name: Install dependencies
-        run: bun install
+      - name: Install ts-codegenerator from npm
+        run: |
+          bun add @ozhanefe/ts-codegenerator@1.8.0
+          echo "Installed ts-codegenerator version:"
+          cat node_modules/@ozhanefe/ts-codegenerator/package.json | grep version
+
+      - name: Install all dependencies
+        run: |
+          cd ..
+          cd ..
+          bun install
+          cd $GITHUB_WORKSPACE
 
       - name: Lint
         run: bun run lint
