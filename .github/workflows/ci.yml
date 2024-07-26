@@ -18,11 +18,12 @@ jobs:
 
       - name: Clear Bun cache and remove node_modules
         run: |
-          bun pm cache clean
+          bun pm cache rm
           rm -rf node_modules
 
       - name: Install ts-codegenerator from npm
         run: |
+          cd apps/next
           bun add @ozhanefe/ts-codegenerator@1.8.0
           echo "Installed ts-codegenerator version:"
           cat node_modules/@ozhanefe/ts-codegenerator/package.json | grep version
