@@ -10,8 +10,7 @@
       "@/*": ["./*"],
       "@components/*": ["./components/*"],
       "@contexts/*": ["./contexts/*"],
-      "@ui/*": ["../../packages/ui/src/*"],
-      "@code-generator/*": ["../../packages/ts-codegenerator/src/*"]
+      "@ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [
