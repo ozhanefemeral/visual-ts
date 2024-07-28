@@ -9,7 +9,7 @@ import {
 } from "@ui/dialog";
 import { Input } from "@ui/input";
 import { Button } from "@ui/button";
-import { CodebaseInfo } from "@ozhanefe/ts-codegenerator";
+import { CodebaseInfo, createFunctionCallBlock, FunctionInfo } from "@ozhanefe/ts-codegenerator";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { KeyCombinationLabel } from "@ui/key-combination-label";
 
@@ -20,10 +20,8 @@ interface SearchDialogProps {
 export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<CodebaseInfo["functions"]>(
-    []
-  );
-  const { setFunctions, functions } = useCodeGenerator();
+  const [searchResults, setSearchResults] = useState<FunctionInfo[]>([]);
+  const { state, setState } = useCodeGenerator();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -36,7 +34,8 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
           event.preventDefault();
           const index = parseInt(event.key) - 1;
           if (index < searchResults.length) {
-            setFunctions([...functions, searchResults[index]]);
+            const {state: newState} = createFunctionCallBlock(searchResults[index], state);
+            setState(newState);
           }
         } else if (event.key === "Escape") {
           setOpen(false);
@@ -48,7 +47,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, searchResults, setFunctions, functions]);
+  }, [open, searchResults]);
 
   useEffect(() => {
     if (searchQuery === "") {
@@ -100,7 +99,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
                   </code>
                 </p>
 
-                <Button onClick={() => setFunctions([...functions, result])}>
+                <Button onClick={() => createFunctionCallBlock(result, state)}>
                   Add
                 </Button>
               </div>
