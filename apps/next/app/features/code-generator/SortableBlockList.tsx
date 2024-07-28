@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
+"use client";
 import React from "react";
 import { useCodeGenerator } from "@contexts/CodeGeneratorContext";
-import { FunctionInfo } from "@ozhanefe/ts-codegenerator";
+import { CodeBlock } from "@ozhanefe/ts-codegenerator";
 import {
   DndContext,
   closestCenter,
@@ -18,16 +20,18 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { BlockViewRenderer } from "@/components/blocks";
+import { Cross1Icon } from "@radix-ui/react-icons";
+
 
 type SortableItemProps = {
-  func: FunctionInfo;
+  block: CodeBlock;
   index: number;
-  // eslint-disable-next-line no-unused-vars
   onRemove: (index: number) => void;
 };
 
 const SortableItem: React.FC<SortableItemProps> = ({
-  func,
+  block,
   index,
   onRemove,
 }) => {
@@ -53,33 +57,21 @@ const SortableItem: React.FC<SortableItemProps> = ({
       style={style}
       {...attributes}
       {...listeners}
-      className="p-4 mb-2 bg-white rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 cursor-move"
+      className="mb-2 cursor-move relative group"
     >
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-gray-800">{func.name}</h3>
-        <button
-          className="text-red-500 hover:text-red-700 transition-colors duration-200 z-10"
-          onClick={(event) => handleRemove(event, index)}
-        >
-          &times;
-        </button>
-      </div>
-      {!!func.parameters && !!func.parameters.length && (
-        <p className="text-sm text-gray-600">
-          Parameters:{" "}
-          <span className="font-semibold">
-            {func.parameters
-              .map((param) => `${param.name}:${param.type}`)
-              .join(", ")}
-          </span>
-        </p>
-      )}
+      <BlockViewRenderer block={block} />
+      <button
+        className="absolute top-2 right-8 text-red-500 hover:text-red-700 transition-colors duration-200 opacity-0 group-hover:opacity-100"
+        onClick={(event) => handleRemove(event, index)}
+      >
+        <Cross1Icon className="h-5 w-5" />
+      </button>
     </div>
   );
 };
 
-export const SortableFunctionList: React.FC = () => {
-  const { functions, setFunctions } = useCodeGenerator();
+export const SortableBlockList: React.FC = () => {
+  const { state, setState } = useCodeGenerator();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -94,51 +86,51 @@ export const SortableFunctionList: React.FC = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    console.log(event);
 
     if (over && active.id !== over.id) {
       const oldIndex = Number(active.id) - 1;
       const newIndex = Number(over.id) - 1;
-      setFunctions(arrayMove(functions, oldIndex, newIndex));
+      setState({
+        ...state,
+        blocks: arrayMove(state.blocks, oldIndex, newIndex),
+      });
     }
   };
 
   const handleRemove = (index: number) => {
-    setFunctions(functions.filter((_, i) => i !== index - 1));
+    setState({
+      ...state,
+      blocks: state.blocks.filter((_, i) => i !== index - 1),
+    });
   };
 
-  const functionsWithId = functions.map((func, index) => ({
-    ...func,
-    id: index + 1,
-  }));
-
-  console.log(functionsWithId);
+  const blocksWithId = state.blocks.map((block, index) => ({ ...block, id: index + 1 }));
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Function List</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-800">Block List</h2>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={functionsWithId.map((func) => func.id)}
+          items={blocksWithId}
           strategy={verticalListSortingStrategy}
         >
-          {functionsWithId.map((func) => (
+          {blocksWithId.map((block) => (
             <SortableItem
-              key={`${func.id}-${func.name}`}
-              func={func}
-              index={func.id}
+              key={`block-${block.id}`}
+              block={block}
+              index={block.id}
               onRemove={handleRemove}
             />
           ))}
         </SortableContext>
       </DndContext>
-      {functions.length === 0 && (
+      {state.blocks.length === 0 && (
         <p className="text-gray-500 text-center py-4">
-          No functions added yet. Use the search dialog to add functions.
+          No blocks added yet. Use the search dialog to add blocks.
         </p>
       )}
     </div>

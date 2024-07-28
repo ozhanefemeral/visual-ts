@@ -3,27 +3,35 @@ import React from "react";
 import { Button } from "@ui/button";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { useSavedFunctions } from "@/contexts/SavedFunctionsContext";
-import { SortableFunctionList } from "./SortableFunctionsList";
+import { SortableBlockList } from "./SortableBlockList";
 import { SaveDialog } from "./Dialogs";
 import { CodeViewer } from "@/components/CodeViewer";
 
 export const CodeGenerator: React.FC = () => {
-  const { functions, setFunctions, variables, code } = useCodeGenerator();
+  const { state, setState, code } = useCodeGenerator();
   const { saveCurrentState } = useSavedFunctions();
 
-  const isEmpty = functions.length === 0;
+  const isEmpty = state.blocks.length === 0;
   const outputWithBreakLine = code.replace(/;/g, ";\n").replace(/{/g, "{\n");
 
   const handleSave = (name: string) => {
-    saveCurrentState(name, functions, variables);
+    saveCurrentState(name, state);
     navigator.clipboard.writeText(outputWithBreakLine);
+  };
+
+  const handleClear = () => {
+    setState({
+      blocks: [],
+      variables: [],
+      isAsync: false
+    });
   };
 
   return (
     <section className="h-fit p-4 border border-gray-200 border-dashed rounded-md">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="col-span-1">
-          <SortableFunctionList />
+          <SortableBlockList />
         </div>
         <div className="col-span-1">
           <CodeViewer code={outputWithBreakLine} />
@@ -32,7 +40,7 @@ export const CodeGenerator: React.FC = () => {
           <SaveDialog onSave={handleSave} isEmpty={isEmpty} />
           <Button
             variant="destructive"
-            onClick={() => setFunctions([])}
+            onClick={handleClear}
             disabled={isEmpty}
           >
             Clear

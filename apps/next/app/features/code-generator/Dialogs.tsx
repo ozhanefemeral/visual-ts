@@ -122,15 +122,14 @@ export const LoadDialog: React.FC = () => {
   } = useSavedFunctions();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [functionToDelete, setFunctionToDelete] = useState<string | null>(null);
-  const { setFunctions, setVariables } = useCodeGenerator();
+  const { setState } = useCodeGenerator();
 
   const handleLoad = useCallback(
     (index: number) => {
-      setFunctions(savedFunctions[index].functions);
-      setVariables(savedFunctions[index].variables);
+      setState(savedFunctions[index].state);
       setLoadDialogOpen(false);
     },
-    [savedFunctions, setFunctions, setVariables, setLoadDialogOpen]
+    [savedFunctions, setState, setLoadDialogOpen]
   );
 
   const handleDelete = (name: string) => {
