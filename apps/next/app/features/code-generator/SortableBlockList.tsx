@@ -23,7 +23,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { BlockViewRenderer } from "@/components/blocks";
 import { Cross1Icon } from "@radix-ui/react-icons";
 
-
 type SortableItemProps = {
   block: CodeBlock;
   index: number;
@@ -104,7 +103,10 @@ export const SortableBlockList: React.FC = () => {
     });
   };
 
-  const blocksWithId = state.blocks.map((block, index) => ({ ...block, id: index + 1 }));
+  const blocksWithId = state.blocks.map((block, index) => ({
+    ...block,
+    id: index + 1,
+  }));
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
