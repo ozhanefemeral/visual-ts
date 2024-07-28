@@ -6,7 +6,7 @@ import {
   FunctionCallBlock,
   generateCode,
   IfBlock,
-  WhileLoopBlock
+  WhileLoopBlock,
 } from "@ozhanefe/ts-codegenerator";
 import {
   PropsWithChildren,
@@ -26,7 +26,7 @@ const CodeGeneratorContext = createContext<Context>({
   state: {
     blocks: [],
     variables: [],
-    isAsync: false
+    isAsync: false,
   },
   setState: () => {},
   code: "",
@@ -35,19 +35,13 @@ const CodeGeneratorContext = createContext<Context>({
 export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const [state, setState] = useState<CodeGeneratorState>(generateRealisticDevDayState());
+  const [state, setState] = useState<CodeGeneratorState>(
+    generateRealisticDevDayState()
+  );
   const [code, setCode] = useState<string>("");
 
   useEffect(() => {
-    const initializeTsMorph = async () => {
-
-    };
-
-    initializeTsMorph();
-  }, []);
-
-  useEffect(() => {
-    setCode(generateCode(state.blocks));   
+    setCode(generateCode(state.blocks));
   }, [state.blocks]);
 
   return (
@@ -55,7 +49,7 @@ export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
       value={{
         state,
         setState,
-        code
+        code,
       }}
     >
       {children}
