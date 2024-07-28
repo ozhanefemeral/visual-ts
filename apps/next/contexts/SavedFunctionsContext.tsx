@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { CodeGeneratorState } from "@ozhanefe/ts-codegenerator";
+import { generateRealisticDevDayState } from "@/lib/utils";
 
 interface SavedFunctionState {
   name: string;
@@ -24,21 +25,27 @@ const SavedFunctionsContext = createContext<
   SavedFunctionsContextType | undefined
 >(undefined);
 
+const initialState = [
+  { name: "Demo - Dev Day", state: generateRealisticDevDayState() },
+];
+
 export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const [savedFunctions, setSavedFunctions] = useState<SavedFunctionState[]>(
-    []
-  );
+  const [savedFunctions, setSavedFunctions] =
+    useState<SavedFunctionState[]>(initialState);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
   const [saveName, setSaveName] = useState("");
 
   useEffect(() => {
     const savedFunctionsFromStorage = localStorage.getItem("savedFunctions");
-    if (savedFunctionsFromStorage) {
+    if (savedFunctionsFromStorage && savedFunctionsFromStorage !== "[]") {
       setSavedFunctions(JSON.parse(savedFunctionsFromStorage));
+      return;
     }
+
+    setSavedFunctions(initialState);
   }, []);
 
   const saveCurrentState = (name: string, state: CodeGeneratorState) => {
@@ -52,6 +59,8 @@ export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
   };
 
   const deleteSavedState = (name: string) => {
+    const index = savedFunctions.findIndex((func) => func.name === name);
+    if (index < 1) return;
     const updatedSavedFunctions = savedFunctions.filter(
       (func) => func.name !== name
     );
