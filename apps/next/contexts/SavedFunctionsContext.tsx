@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { CodeGeneratorState } from "@ozhanefe/ts-codegenerator";
 
@@ -19,12 +20,16 @@ interface SavedFunctionsContextType {
   deleteSavedState: (name: string) => void;
 }
 
-const SavedFunctionsContext = createContext<SavedFunctionsContextType | undefined>(undefined);
+const SavedFunctionsContext = createContext<
+  SavedFunctionsContextType | undefined
+>(undefined);
 
 export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const [savedFunctions, setSavedFunctions] = useState<SavedFunctionState[]>([]);
+  const [savedFunctions, setSavedFunctions] = useState<SavedFunctionState[]>(
+    []
+  );
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
   const [saveName, setSaveName] = useState("");
@@ -40,13 +45,21 @@ export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
     const newState: SavedFunctionState = { name, state };
     const updatedSavedFunctions = [...savedFunctions, newState];
     setSavedFunctions(updatedSavedFunctions);
-    localStorage.setItem("savedFunctions", JSON.stringify(updatedSavedFunctions));
+    localStorage.setItem(
+      "savedFunctions",
+      JSON.stringify(updatedSavedFunctions)
+    );
   };
 
   const deleteSavedState = (name: string) => {
-    const updatedSavedFunctions = savedFunctions.filter((func) => func.name !== name);
+    const updatedSavedFunctions = savedFunctions.filter(
+      (func) => func.name !== name
+    );
     setSavedFunctions(updatedSavedFunctions);
-    localStorage.setItem("savedFunctions", JSON.stringify(updatedSavedFunctions));
+    localStorage.setItem(
+      "savedFunctions",
+      JSON.stringify(updatedSavedFunctions)
+    );
   };
 
   return (
@@ -72,7 +85,9 @@ export const SavedFunctionsProvider: React.FC<React.PropsWithChildren> = ({
 export const useSavedFunctions = () => {
   const context = useContext(SavedFunctionsContext);
   if (context === undefined) {
-    throw new Error("useSavedFunctions must be used within a SavedFunctionsProvider");
+    throw new Error(
+      "useSavedFunctions must be used within a SavedFunctionsProvider"
+    );
   }
   return context;
 };
