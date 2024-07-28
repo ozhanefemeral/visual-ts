@@ -12,18 +12,17 @@ export const CodeGenerator: React.FC = () => {
   const { saveCurrentState } = useSavedFunctions();
 
   const isEmpty = state.blocks.length === 0;
-  const outputWithBreakLine = code.replace(/;/g, ";\n").replace(/{/g, "{\n");
 
   const handleSave = (name: string) => {
     saveCurrentState(name, state);
-    navigator.clipboard.writeText(outputWithBreakLine);
+    navigator.clipboard.writeText(code);
   };
 
   const handleClear = () => {
     setState({
       blocks: [],
       variables: [],
-      isAsync: false
+      isAsync: false,
     });
   };
 
@@ -34,7 +33,7 @@ export const CodeGenerator: React.FC = () => {
           <SortableBlockList />
         </div>
         <div className="col-span-1">
-          <CodeViewer code={outputWithBreakLine} />
+          <CodeViewer code={code} />
         </div>
         <div className="col-span-2 mt-auto flex justify-end gap-x-4 items-end">
           <SaveDialog onSave={handleSave} isEmpty={isEmpty} />
