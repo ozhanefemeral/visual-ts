@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,11 @@ import {
 } from "@ui/dialog";
 import { Input } from "@ui/input";
 import { Button } from "@ui/button";
-import { CodebaseInfo, createFunctionCallBlock, FunctionInfo } from "@ozhanefe/ts-codegenerator";
+import {
+  CodebaseInfo,
+  createFunctionCallBlock,
+  FunctionInfo,
+} from "@ozhanefe/ts-codegenerator";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { KeyCombinationLabel } from "@ui/key-combination-label";
 
@@ -23,6 +27,15 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
   const [searchResults, setSearchResults] = useState<FunctionInfo[]>([]);
   const { state, setState } = useCodeGenerator();
 
+  const addFunction = useCallback(
+    (func: FunctionInfo) => {
+      const { state: newState } = createFunctionCallBlock(func, state);
+
+      setState(newState);
+    },
+    [state, setState]
+  );
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -34,8 +47,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
           event.preventDefault();
           const index = parseInt(event.key) - 1;
           if (index < searchResults.length) {
-            const {state: newState} = createFunctionCallBlock(searchResults[index], state);
-            setState(newState);
+            addFunction(searchResults[index]);
           }
         } else if (event.key === "Escape") {
           setOpen(false);
@@ -47,7 +59,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, searchResults]);
+  }, [open, searchResults, state]);
 
   useEffect(() => {
     if (searchQuery === "") {
@@ -99,9 +111,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
                   </code>
                 </p>
 
-                <Button onClick={() => createFunctionCallBlock(result, state)}>
-                  Add
-                </Button>
+                <Button onClick={() => addFunction(result)}>Add</Button>
               </div>
             ))
           )}
