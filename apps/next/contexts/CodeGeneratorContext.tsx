@@ -1,5 +1,4 @@
-import { CodeGeneratorState, generateCode } from "@ozhanefe/ts-codegenerator";
-import {
+import React, {
   createContext,
   Dispatch,
   PropsWithChildren,
@@ -8,20 +7,24 @@ import {
   useEffect,
   useState,
 } from "react";
+import {
+  blocksToFlattenedNodes,
+  CodeGeneratorState,
+  FlattenedNode,
+  generateCode,
+} from "@ozhanefe/ts-codegenerator";
 
 interface Context {
   state: CodeGeneratorState;
   setState: Dispatch<SetStateAction<CodeGeneratorState>>;
+  flattenedNodes: FlattenedNode[];
   code: string;
 }
 
 const CodeGeneratorContext = createContext<Context>({
-  state: {
-    blocks: [],
-    variables: [],
-    isAsync: false,
-  },
+  state: { blocks: [], variables: [], isAsync: false },
   setState: () => {},
+  flattenedNodes: [],
   code: "",
 });
 
@@ -33,9 +36,11 @@ export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
     variables: [],
     isAsync: false,
   });
+  const [flattenedNodes, setFlattenedNodes] = useState<FlattenedNode[]>([]);
   const [code, setCode] = useState<string>("");
 
   useEffect(() => {
+    setFlattenedNodes(blocksToFlattenedNodes(state.blocks));
     setCode(generateCode(state.blocks));
   }, [state.blocks]);
 
@@ -44,6 +49,7 @@ export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
       value={{
         state,
         setState,
+        flattenedNodes,
         code,
       }}
     >
