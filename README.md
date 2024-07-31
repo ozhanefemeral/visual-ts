@@ -17,7 +17,6 @@ A powerful React/Next.js visual code generator for TypeScript projects. Built on
 
 ## Project Structure
 
-- `packages/ts-generator`: Core TypeScript utility package
 - `apps/next`: Next.js app showcasing ts-generator features
 - `packages/ui`: Shared component library
 - `packages/eslint-config`: ESLint configurations
@@ -35,24 +34,6 @@ yarn add @ozhanefe/ts-generator
 pnpm add @ozhanefe/ts-generator
 # or
 bun add @ozhanefe/ts-generator
-```
-
-Note: This package requires TypeScript as a peer dependency.
-
-## Usage
-
-Here's a basic example of how to use the ts-generator package:
-
-```typescript
-import { parseFunctionsFromFile, generateCode } from "@ozhanefe/ts-generator";
-
-// Parse functions from a TypeScript file
-const { functionsInfo } = parseFunctionsFromFile("path/to/your/file.ts");
-
-// Generate new code based on the parsed functions
-const generatedCode = generateCode(functionsInfo);
-
-console.log(generatedCode);
 ```
 
 ## Development
