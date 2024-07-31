@@ -61,7 +61,7 @@ To set up the project for development:
 
 1. Clone the repository: `git clone https://github.com/ozhanefemeral/ts-generator`
 2. Install dependencies: `bun install`
-3. Build all packages: `bun build`
+3. Build all packages: `bun run build`
 4. Start the development server: `bun dev`
 5. Open the Next.js app in your browser at `http://localhost:3000`
 
