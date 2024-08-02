@@ -14,10 +14,6 @@ export const FunctionEditor: React.FC<{ block: FunctionCallBlock }> = ({
   );
   const { functionInfo } = block;
 
-  // TODO:
-  // just changing the function info is not enough
-  // we need to update the variable name and other relevant fields
-  // a utility function might be helpful as there will multiple fields to update
   const handleSelect = (selectedFunction: FunctionInfo) => {
     setState((state) => {
       if (state.blocks.map((b) => b.index).includes(block.index)) {
