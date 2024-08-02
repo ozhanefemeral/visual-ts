@@ -4,7 +4,6 @@ import {
   PropsWithChildren,
   SetStateAction,
   useContext,
-  useEffect,
   useState,
 } from "react";
 import { CodeBlock } from "@ozhanefe/ts-codegenerator";
@@ -21,10 +20,6 @@ const BlockEditorContext = createContext<Context>({
 
 export const BlockEditorProvider = ({ children }: PropsWithChildren<{}>) => {
   const [currentBlock, setCurrentBlock] = useState<CodeBlock | null>(null);
-
-  useEffect(() => {
-    console.log("currentBlock:", currentBlock);
-  }, [currentBlock]);
 
   return (
     <BlockEditorContext.Provider
