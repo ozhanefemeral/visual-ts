@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@ui/button";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { useSavedFunctions } from "@/contexts/SavedFunctionsContext";
@@ -8,9 +8,16 @@ import { SaveDialog } from "./Dialogs";
 import { CodeViewer } from "@/components/CodeViewer";
 import { BlockEditor } from "@/components/editor";
 import { useBlockEditor } from "@/contexts/BlockEditorContext";
+import { CodebaseInfo } from "@ozhanefe/ts-codegenerator";
 
-export const CodeGenerator: React.FC = () => {
-  const { state, setState, code } = useCodeGenerator();
+interface CodeGeneratorProps {
+  codebaseInfo: CodebaseInfo;
+}
+
+export const CodeGenerator: React.FC<CodeGeneratorProps> = ({
+  codebaseInfo,
+}) => {
+  const { state, setState, code, setCodebaseInfo } = useCodeGenerator();
   const { setCurrentBlock } = useBlockEditor();
   const { saveCurrentState } = useSavedFunctions();
 
@@ -29,6 +36,10 @@ export const CodeGenerator: React.FC = () => {
     });
     setCurrentBlock(null);
   };
+
+  useEffect(() => {
+    setCodebaseInfo(codebaseInfo);
+  }, [codebaseInfo]);
 
   return (
     <section className="h-fit p-4 border border-gray-200 border-dashed rounded-md">

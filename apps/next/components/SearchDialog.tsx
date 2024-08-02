@@ -17,15 +17,11 @@ import {
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { KeyCombinationLabel } from "@ui/key-combination-label";
 
-interface SearchDialogProps {
-  codebaseInfo: CodebaseInfo;
-}
-
-export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
+export const SearchDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<FunctionInfo[]>([]);
-  const { state, setState } = useCodeGenerator();
+  const { state, setState, codebaseInfo } = useCodeGenerator();
 
   const addFunction = useCallback(
     (func: FunctionInfo) => {
@@ -62,6 +58,8 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ codebaseInfo }) => {
   }, [open, searchResults, state]);
 
   useEffect(() => {
+    if (!codebaseInfo) return;
+
     if (searchQuery === "") {
       setSearchResults([]);
     } else {
