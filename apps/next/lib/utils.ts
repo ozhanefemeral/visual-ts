@@ -35,6 +35,7 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 0,
     blockType: "functionCall",
+    id: 0,
   };
 
   const getCoffee: FunctionCallBlock = {
@@ -43,6 +44,7 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 1,
     blockType: "functionCall",
+    id: 1,
   };
 
   const writeCode: FunctionCallBlock = {
@@ -51,45 +53,51 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 2,
     blockType: "functionCall",
+    id: 2,
   };
 
   const ifTired: IfBlock = {
     condition: "energyLevel < 30",
     thenBlocks: [getCoffee],
-    elseBlock: { blocks: [writeCode] },
+    elseBlock: { blocks: [writeCode], blockType: "else", id: 4, index: 4 },
     index: 3,
     blockType: "if",
+    id: 3,
   };
 
   const coding: WhileLoopBlock = {
     condition: "workHours < 8",
     loopBlocks: [ifTired],
-    index: 4,
+    index: 5,
     blockType: "while",
+    id: 5,
   };
 
   const celebrate: FunctionCallBlock = {
     functionInfo: { name: "celebrate", returnType: "void" },
     returnVariable: { name: "partyTime", type: "boolean" },
     isAsync: false,
-    index: 5,
+    index: 6,
     blockType: "functionCall",
+    id: 6,
   };
 
   const playVideoGames: FunctionCallBlock = {
     functionInfo: { name: "playVideoGames", returnType: "void" },
     returnVariable: { name: "stressRelieved", type: "boolean" },
     isAsync: false,
-    index: 6,
+    index: 7,
     blockType: "functionCall",
+    id: 7,
   };
 
   const afterWorkMood: IfBlock = {
     condition: "linesOfCode > 100",
     thenBlocks: [celebrate],
-    elseBlock: { blocks: [playVideoGames] },
-    index: 7,
+    elseBlock: { blocks: [playVideoGames], blockType: "else", id: 9, index: 9 },
+    index: 8,
     blockType: "if",
+    id: 8,
   };
 
   const blocks: CodeBlock[] = [wakeUp, coding, afterWorkMood];
@@ -97,13 +105,13 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
   return {
     blocks,
     variables: [
-      { name: "awake", type: "boolean", index: 0 },
-      { name: "energyLevel", type: "number", index: 1 },
-      { name: "workHours", type: "number", index: 2 },
-      { name: "linesOfCode", type: "number", index: 3 },
-      { name: "caffeinated", type: "boolean", index: 4 },
-      { name: "partyTime", type: "boolean", index: 5 },
-      { name: "stressRelieved", type: "boolean", index: 6 },
+      { index: 0, name: "awake", type: "boolean" },
+      { index: 1, name: "caffeinated", type: "boolean" },
+      { index: 2, name: "energyLevel", type: "number" },
+      { index: 3, name: "workHours", type: "number" },
+      { index: 4, name: "linesOfCode", type: "number" },
+      { index: 5, name: "partyTime", type: "boolean" },
+      { index: 6, name: "stressRelieved", type: "boolean" },
     ],
     isAsync: false,
   };
