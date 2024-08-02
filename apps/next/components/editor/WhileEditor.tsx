@@ -3,7 +3,6 @@ import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { WhileLoopBlock } from "@ozhanefe/ts-codegenerator";
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
-import { log } from "console";
 
 export const WhileEditor: React.FC<{ block: WhileLoopBlock }> = ({ block }) => {
   const condition = block.condition;
