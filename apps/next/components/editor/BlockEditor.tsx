@@ -11,7 +11,7 @@ export const BlockEditor = () => {
   if (!currentBlock) return <EmptyBlockEditor />;
 
   return (
-    <div className="flex flex-1 w-full pb-4">
+    <div className="flex justify-start w-full pb-4 gap-x-4">
       {currentBlock.blockType === "functionCall" && (
         <FunctionEditor block={currentBlock} />
       )}
@@ -25,8 +25,8 @@ export const BlockEditor = () => {
 
 const EmptyBlockEditor = () => {
   return (
-    <div>
-      <p className="text-center">Select a block to edit</p>
+    <div className="pb-4">
+      <p>Select a block to edit</p>
     </div>
   );
 };

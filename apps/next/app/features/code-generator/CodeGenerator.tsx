@@ -7,9 +7,11 @@ import { SortableBlockList } from "./SortableBlockList";
 import { SaveDialog } from "./Dialogs";
 import { CodeViewer } from "@/components/CodeViewer";
 import { BlockEditor } from "@/components/editor";
+import { useBlockEditor } from "@/contexts/BlockEditorContext";
 
 export const CodeGenerator: React.FC = () => {
   const { state, setState, code } = useCodeGenerator();
+  const { setCurrentBlock } = useBlockEditor();
   const { saveCurrentState } = useSavedFunctions();
 
   const isEmpty = state.blocks.length === 0;
@@ -25,6 +27,7 @@ export const CodeGenerator: React.FC = () => {
       variables: [],
       isAsync: false,
     });
+    setCurrentBlock(null);
   };
 
   return (
