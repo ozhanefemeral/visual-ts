@@ -4,6 +4,7 @@ import { FunctionCombobox } from "../FunctionCombobox";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { Input } from "@ui/input";
 import { Button } from "@ui/button";
+import { Separator } from "@ui/separator";
 
 export const FunctionEditor: React.FC<{ block: FunctionCallBlock }> = ({
   block,
@@ -63,11 +64,15 @@ export const FunctionEditor: React.FC<{ block: FunctionCallBlock }> = ({
   return (
     <React.Fragment>
       <FunctionCombobox onSelect={handleSelect} />
-      <Input
-        value={variableName}
-        onChange={(e) => setVariableName(e.target.value)}
-      />
-      <Button onClick={handleRename}>Rename</Button>
+      <Separator orientation="vertical" />
+      <div className="flex gap-x-2">
+        <Input
+          value={variableName}
+          onChange={(e) => setVariableName(e.target.value)}
+        />
+        <Button onClick={handleRename}>Rename</Button>
+      </div>
+      <Separator orientation="vertical" />
     </React.Fragment>
   );
 };
