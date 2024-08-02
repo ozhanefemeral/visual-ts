@@ -22,7 +22,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { BlockViewRenderer } from "@/components/blocks";
 import { Cross1Icon } from "@radix-ui/react-icons";
-
+import { useBlockEditor } from "@/contexts/BlockEditorContext";
 
 type SortableItemProps = {
   block: CodeBlock;
@@ -37,6 +37,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: index });
+  const { setCurrentBlock, currentBlock } = useBlockEditor();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -49,6 +50,10 @@ const SortableItem: React.FC<SortableItemProps> = ({
   ) => {
     event.preventDefault();
     onRemove(index);
+
+    if (currentBlock?.id === block.id) {
+      setCurrentBlock(null);
+    }
   };
 
   return (
@@ -104,7 +109,10 @@ export const SortableBlockList: React.FC = () => {
     });
   };
 
-  const blocksWithId = state.blocks.map((block, index) => ({ ...block, id: index + 1 }));
+  const blocksWithId = state.blocks.map((block, index) => ({
+    ...block,
+    id: index + 1,
+  }));
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg">
