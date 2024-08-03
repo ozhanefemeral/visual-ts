@@ -22,9 +22,13 @@ export const BlockViewRenderer: React.FC<BlockViewRendererProps> = React.memo(
   ({ block }) => {
     const { setCurrentBlock } = useBlockEditor();
 
-    const handleClick = useCallback(() => {
-      setCurrentBlock(block);
-    }, [block, setCurrentBlock]);
+    const handleClick = useCallback(
+      (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        setCurrentBlock(block);
+      },
+      [block, setCurrentBlock]
+    );
 
     return (
       <div className="cursor-pointer" onClick={handleClick}>
