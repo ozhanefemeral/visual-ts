@@ -22,6 +22,10 @@ export const FunctionEditor: React.FC<{ block: FunctionCallBlock }> = ({
           if (b.index === block.index) {
             return {
               ...b,
+              returnVariable: {
+                name: variableName,
+                type: selectedFunction.returnType,
+              },
               functionInfo: selectedFunction,
             };
           }
