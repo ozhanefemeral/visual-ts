@@ -35,7 +35,6 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 0,
     blockType: "functionCall",
-    id: 0,
   };
 
   const getCoffee: FunctionCallBlock = {
@@ -44,7 +43,6 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 1,
     blockType: "functionCall",
-    id: 1,
   };
 
   const writeCode: FunctionCallBlock = {
@@ -53,16 +51,14 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 2,
     blockType: "functionCall",
-    id: 2,
   };
 
   const ifTired: IfBlock = {
     condition: "energyLevel < 30",
     thenBlocks: [getCoffee],
-    elseBlock: { blocks: [writeCode], blockType: "else", id: 4, index: 4 },
+    elseBlock: { blocks: [writeCode], blockType: "else", index: 4 },
     index: 3,
     blockType: "if",
-    id: 3,
   };
 
   const coding: WhileLoopBlock = {
@@ -70,7 +66,6 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     loopBlocks: [ifTired],
     index: 5,
     blockType: "while",
-    id: 5,
   };
 
   const celebrate: FunctionCallBlock = {
@@ -79,7 +74,6 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 6,
     blockType: "functionCall",
-    id: 6,
   };
 
   const playVideoGames: FunctionCallBlock = {
@@ -88,16 +82,14 @@ export function generateRealisticDevDayState(): CodeGeneratorState {
     isAsync: false,
     index: 7,
     blockType: "functionCall",
-    id: 7,
   };
 
   const afterWorkMood: IfBlock = {
     condition: "linesOfCode > 100",
     thenBlocks: [celebrate],
-    elseBlock: { blocks: [playVideoGames], blockType: "else", id: 9, index: 9 },
+    elseBlock: { blocks: [playVideoGames], blockType: "else", index: 9 },
     index: 8,
     blockType: "if",
-    id: 8,
   };
 
   const blocks: CodeBlock[] = [wakeUp, coding, afterWorkMood];

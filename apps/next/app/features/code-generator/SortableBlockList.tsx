@@ -51,7 +51,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
     event.preventDefault();
     onRemove(index);
 
-    if (currentBlock?.id === block.id) {
+    if (currentBlock?.index === block.index) {
       setCurrentBlock(null);
     }
   };
