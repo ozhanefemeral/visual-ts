@@ -42,6 +42,19 @@ export const BlockEditorProvider = ({ children }: PropsWithChildren<{}>) => {
           );
           return newState;
         });
+
+        break;
+      }
+
+      case "while": {
+        setState((state) => {
+          const { state: newState } = createFunctionCallBlock(
+            func,
+            state,
+            currentBlock
+          );
+          return newState;
+        });
       }
     }
   };
