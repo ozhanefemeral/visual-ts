@@ -18,9 +18,15 @@ import { FunctionInfo } from "@ozhanefe/ts-codegenerator";
 
 interface ComboboxDemoProps {
   onSelect: (functionInfo: FunctionInfo) => void;
+  resetAfterSelect?: boolean;
+  popoverText?: string;
 }
 
-export const FunctionCombobox: React.FC<ComboboxDemoProps> = ({ onSelect }) => {
+export const FunctionCombobox: React.FC<ComboboxDemoProps> = ({
+  onSelect,
+  resetAfterSelect,
+  popoverText = "Select a function",
+}) => {
   const { codebaseInfo } = useCodeGenerator();
   const functionInfos = codebaseInfo?.functions;
   const [open, setOpen] = useState(false);
@@ -35,6 +41,10 @@ export const FunctionCombobox: React.FC<ComboboxDemoProps> = ({ onSelect }) => {
       setOpen(false);
       onSelect(functionInfo);
     }
+
+    if (resetAfterSelect) {
+      setValue("");
+    }
   };
 
   return (
@@ -48,7 +58,7 @@ export const FunctionCombobox: React.FC<ComboboxDemoProps> = ({ onSelect }) => {
         >
           {value
             ? functionInfos?.find((info) => info.name === value)?.name
-            : "Select a function"}
+            : popoverText}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
