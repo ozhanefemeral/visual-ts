@@ -36,7 +36,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
   onRemove,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: index });
+    useSortable({ id: index, animateLayoutChanges: () => false });
   const { setCurrentBlock, currentBlock } = useBlockEditor();
 
   const style = {
