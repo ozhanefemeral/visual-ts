@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
-import { FunctionInfo, WhileLoopBlock } from "@ozhanefe/ts-codegenerator";
+import { WhileLoopBlock } from "@ozhanefe/ts-codegenerator";
 import { Input } from "@ui/input";
-import { useBlockEditor } from "@/contexts/BlockEditorContext";
-import { FunctionCombobox } from "../FunctionCombobox";
 import { Separator } from "@ui/separator";
+import { BlockAdder } from "./components/BlockAdder";
 
 export const WhileEditor: React.FC<{ block: WhileLoopBlock }> = ({ block }) => {
-  const condition = block.condition;
   const { setState } = useCodeGenerator();
-  const { createFunctionInside } = useBlockEditor();
+  const [conditionInput, setConditionInput] = useState(block.condition);
+
+  useEffect(() => {
+    setConditionInput(block.condition);
+  }, [block.condition]);
 
   const handleConditionChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -33,19 +35,18 @@ export const WhileEditor: React.FC<{ block: WhileLoopBlock }> = ({ block }) => {
 
       return state;
     });
-  };
 
-  const addFunction = (func: FunctionInfo) => {
-    createFunctionInside(func);
+    setConditionInput(event.target.value);
   };
 
   return (
     <React.Fragment>
-      <FunctionCombobox onSelect={addFunction} resetAfterSelect />
+      <BlockAdder parentBlock={block} />
       <Separator orientation="vertical" />
       <div>
-        <Input defaultValue={condition} onChange={handleConditionChange} />
+        <Input value={conditionInput} onChange={handleConditionChange} />
       </div>
+      <Separator orientation="vertical" />
     </React.Fragment>
   );
 };

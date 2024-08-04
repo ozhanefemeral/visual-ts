@@ -1,51 +1,40 @@
-import { useBlockEditor } from "@/contexts/BlockEditorContext";
+import React, { useEffect, useState } from "react";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
-import { FunctionInfo, IfBlock } from "@ozhanefe/ts-codegenerator";
+import { IfBlock, findAndUpdateBlock } from "@ozhanefe/ts-codegenerator";
 import { Input } from "@ui/input";
-import React from "react";
-import { FunctionCombobox } from "../FunctionCombobox";
 import { Separator } from "@ui/separator";
+import { BlockAdder } from "./components/BlockAdder";
 
 export const IfEditor: React.FC<{ block: IfBlock }> = ({ block }) => {
-  const condition = block.condition;
   const { setState } = useCodeGenerator();
-  const { createFunctionInside } = useBlockEditor();
+  const [conditionInput, setConditionInput] = useState(block.condition);
+
+  useEffect(() => {
+    setConditionInput(block.condition);
+  }, [block.condition]);
 
   const handleConditionChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => {
-      if (state.blocks.map((b) => b.index).includes(block.index)) {
-        const blocks = state.blocks.map((b) => {
-          if (b.index === block.index) {
-            return {
-              ...b,
-              condition: event.target.value,
-            };
-          }
-          return b;
-        });
-        return {
-          ...state,
-          blocks,
-        };
-      }
+    setState((state) => ({
+      ...state,
+      blocks: findAndUpdateBlock(state.blocks, block.index, (b) => ({
+        ...b,
+        condition: event.target.value,
+      })),
+    }));
 
-      return state;
-    });
-  };
-
-  const addFunction = (func: FunctionInfo) => {
-    createFunctionInside(func);
+    setConditionInput(event.target.value);
   };
 
   return (
     <React.Fragment>
-      <FunctionCombobox onSelect={addFunction} resetAfterSelect />
+      <BlockAdder parentBlock={block} />
       <Separator orientation="vertical" />
       <div>
-        <Input defaultValue={condition} onChange={handleConditionChange} />
+        <Input value={conditionInput} onChange={handleConditionChange} />
       </div>
+      <Separator orientation="vertical" />
     </React.Fragment>
   );
 };
