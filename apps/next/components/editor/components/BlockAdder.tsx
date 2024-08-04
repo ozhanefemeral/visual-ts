@@ -22,7 +22,7 @@ interface NestableBlockAdderProps {
   parentBlock?: IfBlock | WhileLoopBlock;
 }
 
-export const NestableBlockAdder: React.FC<NestableBlockAdderProps> = ({
+export const BlockAdder: React.FC<NestableBlockAdderProps> = ({
   parentBlock,
 }) => {
   const [open, setOpen] = useState(false);

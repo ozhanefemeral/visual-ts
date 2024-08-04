@@ -4,7 +4,7 @@ import { useBlockEditor } from "@/contexts/BlockEditorContext";
 import { FunctionEditor } from "./FunctionEditor";
 import { IfEditor } from "./IfEditor";
 import { WhileEditor } from "./WhileEditor";
-import { BlockAdder } from "./components/NestableBlockAdder";
+import { BlockAdder } from "./components/BlockAdder";
 import { Button } from "@ui/button";
 import { XCircleIcon } from "lucide-react";
 
