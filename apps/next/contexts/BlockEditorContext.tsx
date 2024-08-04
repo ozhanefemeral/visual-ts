@@ -30,7 +30,15 @@ export const BlockEditorProvider = ({ children }: PropsWithChildren<{}>) => {
   const [currentBlock, setCurrentBlock] = useState<CodeBlock | null>(null);
 
   const createFunctionInside = (func: FunctionInfo) => {
-    if (!currentBlock) return;
+    // add to root
+    if (!currentBlock) {
+      setState((state) => {
+        const { state: newState } = createFunctionCallBlock(func, state);
+        return newState;
+      });
+
+      return;
+    }
 
     switch (currentBlock.blockType) {
       case "if": {
