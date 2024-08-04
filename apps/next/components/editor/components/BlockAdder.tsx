@@ -132,41 +132,41 @@ export const BlockAdder: React.FC<NestableBlockAdderProps> = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[400px] p-4">
-          <div className="space-y-2">
-            <div className="flex space-x-2">
-              <Button
-                onClick={() => setSelectedType("if")}
-                variant="outline"
-                className="flex-1"
-              >
-                If
-              </Button>
-              <Button
-                onClick={() => setSelectedType("while")}
-                variant="outline"
-                className="flex-1"
-              >
-                While
-              </Button>
+          <div className="flex flex-col gap-y-2">
+            <Button
+              onClick={() => setSelectedType("if")}
+              variant="outline"
+              className="w-full"
+            >
+              If
+            </Button>
+            <Button
+              onClick={() => setSelectedType("while")}
+              variant="outline"
+              className="w-full"
+            >
+              While
+            </Button>
+            <div className="flex space-x-2 items-center">
+              {canAddElseIf && (
+                <Button
+                  onClick={() => setSelectedType("else-if")}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Else If
+                </Button>
+              )}
+              {canAddElse && (
+                <Button
+                  onClick={() => setSelectedType("else")}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Else
+                </Button>
+              )}
             </div>
-            {canAddElseIf && (
-              <Button
-                onClick={() => setSelectedType("else-if")}
-                variant="outline"
-                className="w-full"
-              >
-                Else If
-              </Button>
-            )}
-            {canAddElse && (
-              <Button
-                onClick={() => setSelectedType("else")}
-                variant="outline"
-                className="w-full"
-              >
-                Else
-              </Button>
-            )}
             <div className="flex space-x-2 items-center">
               {selectedType &&
                 selectedType !== "else" &&
