@@ -1,6 +1,6 @@
 import { FunctionCallBlock, FunctionInfo } from "@ozhanefe/ts-codegenerator";
 import React, { useState } from "react";
-import { FunctionCombobox } from "../FunctionCombobox";
+import { FunctionCombobox } from "./components/FunctionCombobox";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { Input } from "@ui/input";
 import { Button } from "@ui/button";

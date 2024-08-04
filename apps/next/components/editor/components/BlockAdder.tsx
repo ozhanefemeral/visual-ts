@@ -14,7 +14,7 @@ import {
   FunctionInfo,
   findAndUpdateBlock,
 } from "@ozhanefe/ts-codegenerator";
-import { FunctionCombobox } from "@/components/FunctionCombobox";
+import { FunctionCombobox } from "@/components/editor/components/FunctionCombobox";
 
 type BlockType = CodeBlock["blockType"];
 
