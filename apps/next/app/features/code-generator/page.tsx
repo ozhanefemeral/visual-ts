@@ -12,11 +12,11 @@ export default function CodeGeneratorPage() {
     <main className="p-8 w-full">
       <h1 className="text-3xl font-bold mb-6">Code Generator</h1>
       <div className="flex gap-4 mb-4">
-        <SearchDialog codebaseInfo={codebaseInfo} />
+        <SearchDialog />
         <LoadDialog />
         <HelpDialog />
       </div>
-      <CodeGenerator />
+      <CodeGenerator codebaseInfo={codebaseInfo} />
     </main>
   );
 }

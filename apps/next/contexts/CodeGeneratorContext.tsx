@@ -1,4 +1,8 @@
-import { CodeGeneratorState, generateCode } from "@ozhanefe/ts-codegenerator";
+import {
+  CodebaseInfo,
+  CodeGeneratorState,
+  generateCode,
+} from "@ozhanefe/ts-codegenerator";
 import {
   createContext,
   Dispatch,
@@ -12,6 +16,8 @@ import {
 interface Context {
   state: CodeGeneratorState;
   setState: Dispatch<SetStateAction<CodeGeneratorState>>;
+  codebaseInfo: CodebaseInfo | null;
+  setCodebaseInfo: Dispatch<SetStateAction<CodebaseInfo | null>>;
   code: string;
 }
 
@@ -22,6 +28,8 @@ const CodeGeneratorContext = createContext<Context>({
     isAsync: false,
   },
   setState: () => {},
+  codebaseInfo: null,
+  setCodebaseInfo: () => {},
   code: "",
 });
 
@@ -34,6 +42,7 @@ export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
     isAsync: false,
   });
   const [code, setCode] = useState<string>("");
+  const [codebaseInfo, setCodebaseInfo] = useState<CodebaseInfo | null>(null);
 
   useEffect(() => {
     setCode(generateCode(state.blocks));
@@ -45,6 +54,8 @@ export const CodeGeneratorProvider: React.FC<PropsWithChildren> = ({
         state,
         setState,
         code,
+        codebaseInfo,
+        setCodebaseInfo,
       }}
     >
       {children}
