@@ -42,7 +42,6 @@ export const Navbar: React.FC = () => {
       </div>
       <div className="flex gap-x-4 items-center">
         <NavbarLink href="/features/code-generator">Code Generator</NavbarLink>
-        <NavbarLink href="/features/module-parser">Module Parser</NavbarLink>
         <NavbarLink href="/roadmap">Roadmap</NavbarLink>
         <Link
           href="https://github.com/ozhanefemeral/visual-ts"
