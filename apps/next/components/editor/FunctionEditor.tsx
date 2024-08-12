@@ -1,9 +1,12 @@
-import { FunctionCallBlock, FunctionInfo } from "@ozhanefe/ts-codegenerator";
 import React, { useState } from "react";
+import {
+  findAndUpdateBlock,
+  FunctionCallBlock,
+  FunctionInfo,
+} from "@ozhanefe/ts-codegenerator";
 import { FunctionCombobox } from "./components/FunctionCombobox";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { Input } from "@ui/input";
-import { Button } from "@ui/button";
 import { Separator } from "@ui/separator";
 
 export const FunctionEditor: React.FC<{ block: FunctionCallBlock }> = ({
@@ -40,41 +43,35 @@ export const FunctionEditor: React.FC<{ block: FunctionCallBlock }> = ({
     });
   };
 
-  const handleRename = () => {
-    setState((state) => {
-      if (state.blocks.map((b) => b.index).includes(block.index)) {
-        const blocks = state.blocks.map((b) => {
-          if (b.index === block.index) {
-            return {
-              ...b,
-              returnVariable: {
-                name: variableName,
-                type: functionInfo.returnType,
-              },
-              variableName: variableName,
-            };
-          }
-          return b;
-        });
-        return {
-          ...state,
-          blocks,
-        };
-      }
-      return state;
-    });
+  const handleRename = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.value;
+    setState((state) => ({
+      ...state,
+      blocks: findAndUpdateBlock(state.blocks, block.index, (b) => ({
+        ...b,
+        returnVariable: {
+          name,
+          type: functionInfo.returnType,
+        },
+        functionInfo: {
+          ...functionInfo,
+          returnVariable: {
+            name,
+            type: functionInfo.returnType,
+          },
+        },
+      })),
+    }));
+
+    setVariableName(event.target.value);
   };
 
   return (
     <React.Fragment>
       <FunctionCombobox onSelect={handleSelect} />
       <Separator orientation="vertical" />
-      <div className="flex gap-x-2">
-        <Input
-          value={variableName}
-          onChange={(e) => setVariableName(e.target.value)}
-        />
-        <Button onClick={handleRename}>Rename</Button>
+      <div>
+        <Input value={variableName} onChange={handleRename} />
       </div>
       <Separator orientation="vertical" />
     </React.Fragment>
