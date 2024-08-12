@@ -12,9 +12,9 @@ import {
   ElseIfBlock,
   ElseBlock,
   FunctionInfo,
-  findAndUpdateBlock,
 } from "@ozhanefe/ts-codegenerator";
 import { FunctionCombobox } from "@/components/editor/components/FunctionCombobox";
+import { useImmerBlockUpdater } from "@/hooks/useImmerUpdaters";
 
 type BlockType = CodeBlock["blockType"];
 
@@ -30,6 +30,7 @@ export const BlockAdder: React.FC<NestableBlockAdderProps> = ({
   const [condition, setCondition] = useState("");
   const { setState } = useCodeGenerator();
   const { setCurrentBlock, createFunctionInside } = useBlockEditor();
+  const updateBlock = useImmerBlockUpdater();
 
   const createNewBlock = useCallback(
     (type: BlockType, condition: string, index: number): CodeBlock => {
@@ -57,51 +58,33 @@ export const BlockAdder: React.FC<NestableBlockAdderProps> = ({
 
   const handleAddBlock = useCallback(
     (newBlock: CodeBlock) => {
-      setState((state) => {
-        const updateBlocks = (blocks: CodeBlock[]): CodeBlock[] => {
-          if (!parentBlock) return [...blocks, newBlock];
-
-          return findAndUpdateBlock(
-            blocks,
-            parentBlock.index,
-            (block): CodeBlock => {
-              if (block.blockType === "if") {
-                if (newBlock.blockType === "else-if") {
-                  return {
-                    ...block,
-                    elseIfBlocks: [
-                      ...(block.elseIfBlocks || []),
-                      newBlock as ElseIfBlock,
-                    ],
-                  };
-                } else if (newBlock.blockType === "else") {
-                  return { ...block, elseBlock: newBlock as ElseBlock };
-                } else {
-                  return {
-                    ...block,
-                    thenBlocks: [...block.thenBlocks, newBlock],
-                  };
-                }
-              } else if (block.blockType === "while") {
-                return {
-                  ...block,
-                  loopBlocks: [...block.loopBlocks, newBlock],
-                };
+      setState((draft) => {
+        if (!parentBlock) {
+          draft.blocks.push(newBlock);
+        } else {
+          updateBlock(parentBlock.index, (block) => {
+            if (block.blockType === "if") {
+              if (newBlock.blockType === "else-if") {
+                block.elseIfBlocks?.push(newBlock as ElseIfBlock);
+              } else if (newBlock.blockType === "else") {
+                block.elseBlock = newBlock as ElseBlock;
+              } else {
+                block.thenBlocks.push(newBlock);
               }
-              return block;
+            } else if (block.blockType === "while") {
+              block.loopBlocks.push(newBlock);
             }
-          );
-        };
-
-        setCurrentBlock(newBlock);
-        setOpen(false);
-        setSelectedType(null);
-        setCondition("");
-
-        return { ...state, blocks: updateBlocks(state.blocks) };
+          });
+        }
+        return draft;
       });
+
+      setCurrentBlock(newBlock);
+      setOpen(false);
+      setSelectedType(null);
+      setCondition("");
     },
-    [parentBlock, setState, setCurrentBlock]
+    [parentBlock, setState, setCurrentBlock, updateBlock]
   );
 
   const handleAddControlBlock = useCallback(() => {

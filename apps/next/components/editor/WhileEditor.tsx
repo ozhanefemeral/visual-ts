@@ -1,42 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
+import React, { useState } from "react";
 import { WhileLoopBlock } from "@ozhanefe/ts-codegenerator";
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
 import { BlockAdder } from "./components/BlockAdder";
+import { useWhileBlockUpdater } from "@/hooks/useImmerUpdaters";
 
 export const WhileEditor: React.FC<{ block: WhileLoopBlock }> = ({ block }) => {
-  const { setState } = useCodeGenerator();
   const [conditionInput, setConditionInput] = useState(block.condition);
-
-  useEffect(() => {
-    setConditionInput(block.condition);
-  }, [block.condition]);
+  const updateWhileBlock = useWhileBlockUpdater();
 
   const handleConditionChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => {
-      if (state.blocks.map((b) => b.index).includes(block.index)) {
-        const blocks = state.blocks.map((b) => {
-          if (b.index === block.index) {
-            return {
-              ...b,
-              condition: event.target.value,
-            };
-          }
-          return b;
-        });
-        return {
-          ...state,
-          blocks,
-        };
-      }
-
-      return state;
+    const newCondition = event.target.value;
+    updateWhileBlock(block, (draft) => {
+      draft.condition = newCondition;
     });
-
-    setConditionInput(event.target.value);
+    setConditionInput(newCondition);
   };
 
   return (

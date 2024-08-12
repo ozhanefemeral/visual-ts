@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
-import { IfBlock, findAndUpdateBlock } from "@ozhanefe/ts-codegenerator";
+import React, { useState } from "react";
+import { IfBlock } from "@ozhanefe/ts-codegenerator";
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
 import { BlockAdder } from "./components/BlockAdder";
+import { useIfBlockUpdater } from "@/hooks/useImmerUpdaters";
 
 export const IfEditor: React.FC<{ block: IfBlock }> = ({ block }) => {
-  const { setState } = useCodeGenerator();
   const [conditionInput, setConditionInput] = useState(block.condition);
-
-  useEffect(() => {
-    setConditionInput(block.condition);
-  }, [block.condition]);
+  const updateIfBlock = useIfBlockUpdater();
 
   const handleConditionChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      blocks: findAndUpdateBlock(state.blocks, block.index, (b) => ({
-        ...b,
-        condition: event.target.value,
-      })),
-    }));
-
-    setConditionInput(event.target.value);
+    const newCondition = event.target.value;
+    updateIfBlock(block, (draft) => {
+      draft.condition = newCondition;
+    });
+    setConditionInput(newCondition);
   };
 
   return (
