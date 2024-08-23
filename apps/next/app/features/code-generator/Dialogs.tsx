@@ -158,7 +158,7 @@ export const LoadDialog: React.FC = () => {
         }
       }
       if (loadDialogOpen) {
-        if (event.altKey && event.key >= "1" && event.key <= "9") {
+        if ((event.altKey || event.ctrlKey) && event.key >= "1" && event.key <= "9") {
           event.preventDefault();
           const index = parseInt(event.key) - 1;
           if (index < savedFunctions.length) {
@@ -193,7 +193,7 @@ export const LoadDialog: React.FC = () => {
                 className="flex justify-between items-center mb-2"
               >
                 <p className="font-medium">
-                  <KeyCombinationLabel>⌥ + {index + 1}</KeyCombinationLabel>
+                  <KeyCombinationLabel>Ctrl + {index + 1}</KeyCombinationLabel>
                   &nbsp;
                   {savedFunc.name}
                 </p>
