@@ -39,7 +39,7 @@ export const SearchDialog: React.FC = () => {
         setOpen(true);
       }
       if (open) {
-        if (event.altKey && event.key >= "1" && event.key <= "9") {
+        if (event.ctrlKey && event.key >= "1" && event.key <= "9") {
           event.preventDefault();
           const index = parseInt(event.key) - 1;
           if (index < searchResults.length) {
@@ -102,7 +102,7 @@ export const SearchDialog: React.FC = () => {
                 className="flex items-center justify-between mb-2"
               >
                 <p className="font-medium">
-                  <KeyCombinationLabel>⌥ + {index + 1}</KeyCombinationLabel>
+                  <KeyCombinationLabel>Ctrl + {index + 1}</KeyCombinationLabel>
                   &nbsp;
                   <code>
                     {result.name}: {result.returnType}
