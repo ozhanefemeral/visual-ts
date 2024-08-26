@@ -39,7 +39,7 @@ export const SearchDialog: React.FC = () => {
         setOpen(true);
       }
       if (open) {
-        if ((event.altKey || event.ctrlKey) && event.key >= "1" && event.key <= "9") {
+        if (event.ctrlKey && event.key >= "1" && event.key <= "9") {
           event.preventDefault();
           const index = parseInt(event.key) - 1;
           if (index < searchResults.length) {

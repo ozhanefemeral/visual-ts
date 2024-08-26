@@ -158,7 +158,7 @@ export const LoadDialog: React.FC = () => {
         }
       }
       if (loadDialogOpen) {
-        if ((event.altKey || event.ctrlKey) && event.key >= "1" && event.key <= "9") {
+        if (event.ctrlKey && event.key >= "1" && event.key <= "9") {
           event.preventDefault();
           const index = parseInt(event.key) - 1;
           if (index < savedFunctions.length) {
