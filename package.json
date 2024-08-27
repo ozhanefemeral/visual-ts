@@ -38,7 +38,6 @@
     "packages/*"
   ],
   "dependencies": {
-    "immer": "^10.1.1",
     "lucide-react": "^0.424.0"
   }
 }
