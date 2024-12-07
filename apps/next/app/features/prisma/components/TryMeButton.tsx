@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@ui/button";
+import { useToast } from "@ui/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { ScrollArea } from "@ui/scroll-area";
 import { Copy } from "lucide-react";
@@ -125,22 +126,28 @@ model OrderItem {
 `;
 
 export function TryMeButton() {
+  const { toast } = useToast();
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button>Try Me</Button>
       </PopoverTrigger>
       <PopoverContent className="w-[520px] p-0" align="end">
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-2 top-2 h-6 w-6"
-            onClick={() => navigator.clipboard.writeText(EXAMPLE_SCHEMA)}
-          >
-            <Copy className="h-3 w-3" />
-          </Button>
-          <ScrollArea className="h-[300px] p-4">
+        <div className="relative p-4">
+          <div className="w-full flex justify-end">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                navigator.clipboard.writeText(EXAMPLE_SCHEMA);
+                toast({ description: "Copied to clipboard successfully!" });
+              }}
+            >
+              <Copy className="h-3 w-3" />
+            </Button>
+          </div>
+          <ScrollArea className="h-[300px]">
             <pre className="text-xs font-mono">{EXAMPLE_SCHEMA}</pre>
           </ScrollArea>
         </div>
