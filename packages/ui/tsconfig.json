@@ -8,6 +8,6 @@
     "types": ["jest"],
     "outDir": "dist"
   },
-  "include": ["src", "tailwind.config.ts", "turbo", "hooks"],
+  "include": ["src", "tailwind.config.ts", "turbo", "src/hooks"],
   "exclude": ["node_modules", "dist"]
 }
