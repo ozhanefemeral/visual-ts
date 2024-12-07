@@ -29,6 +29,7 @@ export const PrismaGenerator: React.FC = () => {
         <Textarea
           onChange={(e) => setSchemaInput(e.target.value)}
           value={schemaInput}
+          className="min-h-96"
         />
         <div className="flex justify-end">
           <Button disabled={!schemaInput} onClick={handleGenerateClick}>
