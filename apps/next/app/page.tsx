@@ -15,8 +15,11 @@ export default function Home() {
           <Button asChild>
             <Link href="/features/code-generator">Code Generator</Link>
           </Button>
-          <Button asChild variant="secondary">
-            <Link href="/roadmap">Roadmap</Link>
+          <Button asChild variant="ghost">
+            <Link href="/features/prisma">Prisma</Link>
+          </Button>
+          <Button asChild variant="link">
+            <Link href="/features/prisma">Roadmap</Link>
           </Button>
           <Button asChild variant="ghost" size="icon">
             <Link
