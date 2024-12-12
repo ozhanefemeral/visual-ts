@@ -3,12 +3,12 @@ import React, { useEffect } from "react";
 import { Button } from "@ui/button";
 import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
 import { useSavedFunctions } from "@/contexts/SavedFunctionsContext";
-import { SortableBlockList } from "./SortableBlockList";
 import { SaveDialog } from "./Dialogs";
 import { CodeViewer } from "@/components/CodeViewer";
 import { BlockEditor } from "@/components/editor";
 import { useBlockEditor } from "@/contexts/BlockEditorContext";
 import { CodebaseInfo } from "@ozhanefe/ts-codegenerator";
+import { SortableTree } from "./Tree/SortableTree";
 
 interface CodeGeneratorProps {
   codebaseInfo: CodebaseInfo;
@@ -48,7 +48,7 @@ export const CodeGenerator: React.FC<CodeGeneratorProps> = ({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="col-span-1">
-          <SortableBlockList />
+          <SortableTree />
         </div>
         <div className="col-span-1">
           <CodeViewer code={code} />

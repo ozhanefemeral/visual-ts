@@ -1,71 +1,46 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   Announcements,
   DndContext,
-  closestCenter,
+  DragEndEvent,
+  DragMoveEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  DropAnimation,
   KeyboardSensor,
+  MeasuringStrategy,
+  Modifier,
   PointerSensor,
+  UniqueIdentifier,
+  closestCenter,
+  defaultDropAnimation,
   useSensor,
   useSensors,
-  DragStartEvent,
-  DragOverlay,
-  DragMoveEvent,
-  DragEndEvent,
-  DragOverEvent,
-  MeasuringStrategy,
-  DropAnimation,
-  Modifier,
-  defaultDropAnimation,
-  UniqueIdentifier,
 } from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
+import { useBlockEditor } from "@/contexts/BlockEditorContext";
+import { useCodeGenerator } from "@/contexts/CodeGeneratorContext";
+import { CSS } from "@dnd-kit/utilities";
+import { SortableTreeItem } from "./components";
+import { sortableTreeKeyboardCoordinates } from "./keyboardCoordinates";
+import type { FlattenedItem, SensorContext, TreeItems } from "./types";
 import {
   buildTree,
   flattenTree,
-  getProjection,
   getChildCount,
-  removeItem,
+  getProjection,
   removeChildrenOf,
+  removeItem,
   setProperty,
 } from "./utilities";
-import type { FlattenedItem, SensorContext, TreeItems } from "./types";
-import { sortableTreeKeyboardCoordinates } from "./keyboardCoordinates";
-import { SortableTreeItem } from "./components";
-import { CSS } from "@dnd-kit/utilities";
-
-const initialItems: TreeItems = [
-  {
-    id: "Home",
-    children: [],
-  },
-  {
-    id: "Collections",
-    children: [
-      { id: "Spring", children: [] },
-      { id: "Summer", children: [] },
-      { id: "Fall", children: [] },
-      { id: "Winter", children: [] },
-    ],
-  },
-  {
-    id: "About Us",
-    children: [],
-  },
-  {
-    id: "My Account",
-    children: [
-      { id: "Addresses", children: [] },
-      { id: "Order History", children: [] },
-    ],
-  },
-];
 
 const measuring = {
   droppable: {
@@ -97,21 +72,37 @@ const dropAnimationConfig: DropAnimation = {
 };
 
 interface Props {
-  collapsible?: boolean;
-  defaultItems?: TreeItems;
   indentationWidth?: number;
   indicator?: boolean;
   removable?: boolean;
 }
 
 export function SortableTree({
-  collapsible,
-  defaultItems = initialItems,
   indicator = false,
   indentationWidth = 50,
   removable,
 }: Props) {
-  const [items, setItems] = useState(() => defaultItems);
+  const { state, setState } = useCodeGenerator();
+  const { setCurrentBlock, currentBlock } = useBlockEditor();
+
+  const [items, setItems] = useState<TreeItems>(() =>
+    state.blocks.map((block, index) => ({
+      id: block.index.toString(),
+      children: [],
+      block,
+    }))
+  );
+
+  useEffect(() => {
+    setItems(
+      state.blocks.map((block) => ({
+        id: block.index.toString(),
+        children: [],
+        block,
+      }))
+    );
+  }, [state.blocks]);
+
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [overId, setOverId] = useState<UniqueIdentifier | null>(null);
   const [offsetLeft, setOffsetLeft] = useState(0);
@@ -122,6 +113,8 @@ export function SortableTree({
 
   const flattenedItems = useMemo(() => {
     const flattenedTree = flattenTree(items);
+    console.log(flattenedTree);
+
     const collapsedItems = flattenedTree.reduce<UniqueIdentifier[]>(
       (acc, { children, collapsed, id }) =>
         collapsed && children.length ? [...acc, id] : acc,
@@ -133,6 +126,7 @@ export function SortableTree({
       activeId != null ? [activeId, ...collapsedItems] : collapsedItems
     );
   }, [activeId, items]);
+
   const projected =
     activeId && overId
       ? getProjection(
@@ -183,7 +177,14 @@ export function SortableTree({
       return getMovementAnnouncement("onDragOver", active.id, over?.id);
     },
     onDragEnd({ active, over }) {
-      return getMovementAnnouncement("onDragEnd", active.id, over?.id);
+      const announcement = getMovementAnnouncement(
+        "onDragEnd",
+        active.id,
+        over?.id
+      );
+      // @ts-ignore - DragEndEvent type mismatch but functionality works
+      handleDragEnd({ active, over });
+      return announcement;
     },
     onDragCancel({ active }) {
       return `Moving was cancelled. ${active.id} was dropped in its original position.`;
@@ -212,12 +213,8 @@ export function SortableTree({
             indentationWidth={indentationWidth}
             indicator={indicator}
             collapsed={Boolean(collapsed && children.length)}
-            onCollapse={
-              collapsible && children.length
-                ? () => handleCollapse(id)
-                : undefined
-            }
             onRemove={removable ? () => handleRemove(id) : undefined}
+            block={flattenedItems.find((item) => item.id === id)?.block!}
           />
         ))}
         {createPortal(
@@ -284,6 +281,15 @@ export function SortableTree({
       const newItems = buildTree(sortedItems);
 
       setItems(newItems);
+
+      const newBlocks = sortedItems
+        .map((item) => item.block)
+        .filter((block): block is NonNullable<typeof block> => block !== null);
+
+      setState({
+        ...state,
+        blocks: newBlocks,
+      });
     }
   }
 
@@ -301,15 +307,20 @@ export function SortableTree({
   }
 
   function handleRemove(id: UniqueIdentifier) {
-    setItems((items) => removeItem(items, id));
-  }
+    const itemToRemove = flattenedItems.find((item) => item.id === id);
+    if (
+      itemToRemove?.block &&
+      currentBlock?.index === itemToRemove.block.index
+    ) {
+      setCurrentBlock(null);
+    }
 
-  function handleCollapse(id: UniqueIdentifier) {
-    setItems((items) =>
-      setProperty(items, id, "collapsed", (value) => {
-        return !value;
-      })
-    );
+    setItems((items) => removeItem(items, id));
+
+    setState({
+      ...state,
+      blocks: state.blocks.filter((block) => block.index.toString() !== id),
+    });
   }
 
   function getMovementAnnouncement(

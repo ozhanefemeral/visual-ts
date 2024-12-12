@@ -2,8 +2,11 @@ import React, { forwardRef, HTMLAttributes } from "react";
 import { GripVertical, ArrowDownFromLine, X } from "lucide-react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { cn } from "@ui/utils/tailwind-utils";
+import { CodeBlock } from "@ozhanefe/ts-codegenerator";
+import { BlockViewRenderer } from "@/components/blocks";
 
-export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
+export interface TreeItemProps
+  extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
   childCount?: number;
   clone?: boolean;
   collapsed?: boolean;
@@ -15,12 +18,13 @@ export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
   indicator?: boolean;
   indentationWidth: number;
   value: UniqueIdentifier;
+  block?: CodeBlock;
   onCollapse?(): void;
   onRemove?(): void;
   wrapperRef?(node: HTMLLIElement): void;
 }
 
-export const TreeItem = forwardRef<HTMLDivElement, Props>(
+export const TreeItem = forwardRef<HTMLDivElement, TreeItemProps>(
   (
     {
       childCount,
@@ -38,6 +42,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
       style,
       value,
       wrapperRef,
+      block,
       ...props
     },
     ref
@@ -78,9 +83,15 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(
               )}
             />
           )}
-          <span className="flex-grow pl-2 whitespace-nowrap overflow-hidden text-ellipsis">
-            {value}
-          </span>
+          <div className="flex-grow pl-2">
+            {block ? (
+              <BlockViewRenderer block={block} />
+            ) : (
+              <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                {value}
+              </span>
+            )}
+          </div>
           {!clone && onRemove && (
             <X onClick={onRemove} className="cursor-pointer" />
           )}
