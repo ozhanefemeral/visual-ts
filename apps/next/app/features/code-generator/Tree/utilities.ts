@@ -2,6 +2,7 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
 import type { FlattenedItem, TreeItem, TreeItems } from "./types";
+import { CodeBlock } from "@ozhanefe/ts-codegenerator";
 
 export const iOS =
   typeof navigator !== "undefined"
@@ -26,7 +27,7 @@ export function getProjection(
   const previousItem = newItems[overItemIndex - 1];
   const nextItem = newItems[overItemIndex + 1];
   const dragDepth = getDragDepth(dragOffset, indentationWidth);
-  const projectedDepth = activeItem.depth + dragDepth;
+  const projectedDepth = activeItem?.depth + dragDepth || 0;
   const maxDepth = getMaxDepth({
     previousItem,
   });
@@ -98,17 +99,26 @@ export function flattenTree(items: TreeItems): FlattenedItem[] {
 }
 
 export function buildTree(flattenedItems: FlattenedItem[]): TreeItems {
-  const root: TreeItem = { id: "root", children: [], block: null };
+  const root: TreeItem = { id: "root", children: [], block: {} as CodeBlock };
   const nodes: Record<string, TreeItem> = { [root.id]: root };
   const items = flattenedItems.map((item) => ({ ...item, children: [] }));
 
   for (const item of items) {
     const { id, children, block } = item;
     const parentId = item.parentId ?? root.id;
-    const parent = nodes[parentId] ?? findItem(items, parentId);
 
-    nodes[id] = { id, children, block };
-    parent.children.push(item);
+    // create the node if it doesn't exist
+    if (!nodes[id]) {
+      nodes[id] = { id, children: [], block };
+    }
+
+    // ensure parent exists
+    if (!nodes[parentId]) {
+      nodes[parentId] = { id: parentId, children: [], block: {} as CodeBlock };
+    }
+
+    // add this item to its parent's children
+    nodes[parentId].children.push(nodes[id]);
   }
 
   return root.children;

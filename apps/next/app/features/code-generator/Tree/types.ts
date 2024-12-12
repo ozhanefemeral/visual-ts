@@ -6,8 +6,11 @@ export interface TreeItem {
   id: UniqueIdentifier;
   children: TreeItem[];
   collapsed?: boolean;
-  // if block is null, it is the root
-  block: CodeBlock | null;
+  block: CodeBlock;
+  // control flow metadata
+  isControlFlowChild?: boolean;
+  controlFlowParentId?: UniqueIdentifier;
+  blockRole?: "thenBlock" | "elseIfBlock" | "elseBlock" | "loopBlock";
 }
 
 export type TreeItems = TreeItem[];
