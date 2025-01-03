@@ -451,11 +451,6 @@ export function SortableTree({
         // recursively rebuild then blocks, maintaining order based on flattened index
         ifBlock.thenBlocks = children
           .filter((c) => c.blockRole === "thenBlock")
-          .sort(
-            (a, b) =>
-              flattenedItems.findIndex((i) => i.id === a.id) -
-              flattenedItems.findIndex((i) => i.id === b.id)
-          )
           .map((c) => {
             const thenBlock = { ...c.block };
             if (c.children.length > 0 && thenBlock.blockType === "if") {
@@ -468,11 +463,6 @@ export function SortableTree({
         // recursively rebuild else-if blocks, maintaining order based on flattened index
         ifBlock.elseIfBlocks = children
           .filter((c) => c.blockRole === "elseIfBlock")
-          .sort(
-            (a, b) =>
-              flattenedItems.findIndex((i) => i.id === a.id) -
-              flattenedItems.findIndex((i) => i.id === b.id)
-          )
           .map((c) => {
             const elseIfBlock = { ...c.block } as ElseIfBlock;
             if (c.children.length > 0) {
@@ -496,11 +486,6 @@ export function SortableTree({
         const whileBlock = block as WhileLoopBlock;
         whileBlock.loopBlocks = (item.children || [])
           .filter((c) => c.blockRole === "loopBlock")
-          .sort(
-            (a, b) =>
-              flattenedItems.findIndex((i) => i.id === a.id) -
-              flattenedItems.findIndex((i) => i.id === b.id)
-          )
           .map((c) => {
             const loopBlock = { ...c.block };
             if (c.children.length > 0 && loopBlock.blockType === "if") {
