@@ -276,7 +276,7 @@ export function SortableTree({
     },
   };
 
-  // console.log(state.blocks);
+  if (typeof window === "undefined") return null;
 
   return (
     <DndContext
