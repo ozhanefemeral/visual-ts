@@ -98,83 +98,88 @@ export function SortableTree({
   const { setCurrentBlock, currentBlock } = useBlockEditor();
 
   const buildTreeItems = (blocks: CodeBlock[]): TreeItems => {
-    return blocks.map((block) => {
-      const treeItem: TreeItem = {
-        id: block.index.toString(),
-        children: [],
-        block,
-      };
+    const buildTreeItemsRecursive = (
+      blocks: CodeBlock[],
+      parentId?: string,
+      blockRole?: TreeItem["blockRole"]
+    ): TreeItems => {
+      return blocks.map((block) => {
+        const treeItem: TreeItem = {
+          id: block.index.toString(),
+          children: [],
+          block,
+          ...(parentId && {
+            isControlFlowChild: true,
+            controlFlowParentId: parentId,
+            blockRole,
+          }),
+        };
 
-      switch (block.blockType) {
-        case "if": {
-          // handle then blocks
-          treeItem.children.push(
-            ...block.thenBlocks.map((b) => ({
-              id: b.index.toString(),
-              children: [],
-              block: b,
-              isControlFlowChild: true,
-              controlFlowParentId: block.index.toString(),
-              blockRole: "thenBlock" as const,
-            }))
-          );
+        switch (block.blockType) {
+          case "if": {
+            const ifBlock = block as IfBlock;
+            // handle then blocks
+            treeItem.children.push(
+              ...buildTreeItemsRecursive(
+                ifBlock.thenBlocks,
+                block.index.toString(),
+                "thenBlock"
+              )
+            );
 
-          // handle else-if blocks
-          block.elseIfBlocks?.forEach((elseIf) => {
-            treeItem.children.push({
-              id: elseIf.index.toString(),
-              children: elseIf.blocks.map((b) => ({
-                id: b.index.toString(),
-                children: [],
-                block: b,
+            // handle else-if blocks
+            ifBlock.elseIfBlocks?.forEach((elseIf) => {
+              const elseIfItem: TreeItem = {
+                id: elseIf.index.toString(),
+                children: buildTreeItemsRecursive(
+                  elseIf.blocks || [],
+                  elseIf.index.toString(),
+                  "elseIfBlock"
+                ),
+                block: elseIf,
                 isControlFlowChild: true,
-                controlFlowParentId: elseIf.index.toString(),
-                blockRole: "elseIfBlock" as const,
-              })),
-              block: elseIf,
-              isControlFlowChild: true,
-              controlFlowParentId: block.index.toString(),
-              blockRole: "elseIfBlock" as const,
+                controlFlowParentId: block.index.toString(),
+                blockRole: "elseIfBlock",
+              };
+              treeItem.children.push(elseIfItem);
             });
-          });
 
-          // handle else block
-          if (block.elseBlock) {
-            treeItem.children.push({
-              id: block.elseBlock.index.toString(),
-              children: block.elseBlock.blocks.map((b) => ({
-                id: b.index.toString(),
-                children: [],
-                block: b,
+            // handle else block
+            if (ifBlock.elseBlock) {
+              const elseItem: TreeItem = {
+                id: ifBlock.elseBlock.index.toString(),
+                children: buildTreeItemsRecursive(
+                  ifBlock.elseBlock.blocks || [],
+                  ifBlock.elseBlock.index.toString(),
+                  "elseBlock"
+                ),
+                block: ifBlock.elseBlock,
                 isControlFlowChild: true,
-                controlFlowParentId: block.elseBlock!.index.toString(),
-                blockRole: "elseBlock" as const,
-              })),
-              block: block.elseBlock,
-              isControlFlowChild: true,
-              controlFlowParentId: block.index.toString(),
-              blockRole: "elseBlock",
-            });
+                controlFlowParentId: block.index.toString(),
+                blockRole: "elseBlock",
+              };
+              treeItem.children.push(elseItem);
+            }
+            break;
           }
-          break;
+          case "while": {
+            const whileBlock = block as WhileLoopBlock;
+            treeItem.children.push(
+              ...buildTreeItemsRecursive(
+                whileBlock.loopBlocks,
+                block.index.toString(),
+                "loopBlock"
+              )
+            );
+            break;
+          }
         }
-        case "while": {
-          treeItem.children.push(
-            ...block.loopBlocks.map((b) => ({
-              id: b.index.toString(),
-              children: [],
-              block: b,
-              isControlFlowChild: true,
-              controlFlowParentId: block.index.toString(),
-              blockRole: "loopBlock" as const,
-            }))
-          );
-          break;
-        }
-      }
 
-      return treeItem;
-    });
+        return treeItem;
+      });
+    };
+
+    return buildTreeItemsRecursive(blocks);
   };
 
   const [items, setItems] = useState<TreeItems>(() =>
@@ -257,20 +262,21 @@ export function SortableTree({
     onDragOver({ active, over }) {
       return getMovementAnnouncement("onDragOver", active.id, over?.id);
     },
-    onDragEnd({ active, over }) {
+    onDragEnd(event) {
       const announcement = getMovementAnnouncement(
         "onDragEnd",
-        active.id,
-        over?.id
+        event.active.id,
+        event.over?.id
       );
-      // @ts-ignore - DragEndEvent type mismatch but functionality works
-      handleDragEnd({ active, over });
+      handleDragEnd(event as DragEndEvent);
       return announcement;
     },
     onDragCancel({ active }) {
       return `Moving was cancelled. ${active.id} was dropped in its original position.`;
     },
   };
+
+  // console.log(state.blocks);
 
   return (
     <DndContext
@@ -342,59 +348,6 @@ export function SortableTree({
 
   function handleDragOver({ over }: DragOverEvent) {
     setOverId(over?.id ?? null);
-  }
-
-  function handleDragEnd({ active, over }: DragEndEvent) {
-    if (!projected || !over) return;
-
-    const activeItem = flattenedItems.find(({ id }) => id === active.id);
-    const overItem = flattenedItems.find(({ id }) => id === over.id);
-
-    if (!activeItem || !overItem) return;
-
-    // prevent moving control flow blocks inappropriately
-    if (activeItem.isControlFlowChild) {
-      // prevent moving else/elseif blocks away from their if block
-      if (
-        activeItem.blockRole === "elseIfBlock" ||
-        activeItem.blockRole === "elseBlock"
-      ) {
-        if (overItem.controlFlowParentId !== activeItem.controlFlowParentId) {
-          return;
-        }
-      }
-
-      // prevent moving blocks out of their control flow parent
-      if (overItem.controlFlowParentId !== activeItem.controlFlowParentId) {
-        return;
-      }
-    }
-
-    resetState();
-
-    if (projected && over) {
-      const { depth, parentId } = projected;
-      const clonedItems: FlattenedItem[] = JSON.parse(
-        JSON.stringify(flattenTree(items))
-      );
-      const overIndex = clonedItems.findIndex(({ id }) => id === over.id);
-      const activeIndex = clonedItems.findIndex(({ id }) => id === active.id);
-      const activeTreeItem = clonedItems[activeIndex];
-
-      clonedItems[activeIndex] = { ...activeTreeItem, depth, parentId };
-
-      const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
-      const newItems = buildTree(sortedItems);
-
-      setItems(newItems);
-
-      // rebuild the blocks structure
-      const newBlocks = rebuildBlocksFromTree(newItems);
-      setState({
-        ...state,
-        blocks: newBlocks,
-      });
-    }
   }
 
   function handleDragCancel() {
@@ -495,27 +448,145 @@ export function SortableTree({
         const ifBlock = block as IfBlock;
         const children = item.children || [];
 
+        // recursively rebuild then blocks, maintaining order based on flattened index
         ifBlock.thenBlocks = children
           .filter((c) => c.blockRole === "thenBlock")
-          .map((c) => c.block);
+          .sort(
+            (a, b) =>
+              flattenedItems.findIndex((i) => i.id === a.id) -
+              flattenedItems.findIndex((i) => i.id === b.id)
+          )
+          .map((c) => {
+            const thenBlock = { ...c.block };
+            if (c.children.length > 0 && thenBlock.blockType === "if") {
+              const nestedChildren = rebuildBlocksFromTree([c]);
+              return nestedChildren[0];
+            }
+            return thenBlock;
+          });
 
+        // recursively rebuild else-if blocks, maintaining order based on flattened index
         ifBlock.elseIfBlocks = children
           .filter((c) => c.blockRole === "elseIfBlock")
-          .map((c) => c.block as ElseIfBlock);
+          .sort(
+            (a, b) =>
+              flattenedItems.findIndex((i) => i.id === a.id) -
+              flattenedItems.findIndex((i) => i.id === b.id)
+          )
+          .map((c) => {
+            const elseIfBlock = { ...c.block } as ElseIfBlock;
+            if (c.children.length > 0) {
+              elseIfBlock.blocks = rebuildBlocksFromTree(c.children);
+            }
+            return elseIfBlock;
+          });
 
+        // recursively rebuild else block
         const elseChild = children.find((c) => c.blockRole === "elseBlock");
-        ifBlock.elseBlock = elseChild
-          ? (elseChild.block as ElseBlock)
-          : undefined;
+        if (elseChild) {
+          const elseBlock = { ...elseChild.block } as ElseBlock;
+          if (elseChild.children.length > 0) {
+            elseBlock.blocks = rebuildBlocksFromTree(elseChild.children);
+          }
+          ifBlock.elseBlock = elseBlock;
+        } else {
+          ifBlock.elseBlock = undefined;
+        }
       } else if (block.blockType === "while") {
         const whileBlock = block as WhileLoopBlock;
         whileBlock.loopBlocks = (item.children || [])
           .filter((c) => c.blockRole === "loopBlock")
-          .map((c) => c.block);
+          .sort(
+            (a, b) =>
+              flattenedItems.findIndex((i) => i.id === a.id) -
+              flattenedItems.findIndex((i) => i.id === b.id)
+          )
+          .map((c) => {
+            const loopBlock = { ...c.block };
+            if (c.children.length > 0 && loopBlock.blockType === "if") {
+              const nestedChildren = rebuildBlocksFromTree([c]);
+              return nestedChildren[0];
+            }
+            return loopBlock;
+          });
       }
 
       return block;
     });
+  }
+
+  function handleDragEnd({ active, over }: DragEndEvent) {
+    if (!projected || !over) return;
+
+    const activeItem = flattenedItems.find(({ id }) => id === active.id);
+    const overItem = flattenedItems.find(({ id }) => id === over.id);
+
+    if (!activeItem || !overItem) return;
+
+    // prevent moving control flow blocks inappropriately
+    if (activeItem.isControlFlowChild) {
+      // prevent moving else/elseif blocks away from their if block
+      if (
+        activeItem.block.blockType === "else" ||
+        activeItem.block.blockType === "else-if"
+      ) {
+        if (overItem.controlFlowParentId !== activeItem.controlFlowParentId) {
+          return;
+        }
+      }
+    }
+
+    resetState();
+
+    if (projected && over) {
+      const { depth, parentId } = projected;
+      const clonedItems: FlattenedItem[] = JSON.parse(
+        JSON.stringify(flattenTree(items))
+      );
+      const overIndex = clonedItems.findIndex(({ id }) => id === over.id);
+      const activeIndex = clonedItems.findIndex(({ id }) => id === active.id);
+      const activeTreeItem = clonedItems[activeIndex];
+
+      // determine the new parent block and role
+      const newParentItem = parentId
+        ? clonedItems.find(({ id }) => id === parentId)
+        : null;
+      let newBlockRole:
+        | "thenBlock"
+        | "elseIfBlock"
+        | "elseBlock"
+        | "loopBlock"
+        | undefined = undefined;
+
+      if (newParentItem) {
+        if (newParentItem.block.blockType === "if") {
+          newBlockRole = "thenBlock";
+        } else if (newParentItem.block.blockType === "while") {
+          newBlockRole = "loopBlock";
+        }
+      }
+
+      // update the active item with new depth and parent info
+      clonedItems[activeIndex] = {
+        ...activeTreeItem,
+        depth,
+        parentId,
+        blockRole: newBlockRole,
+        isControlFlowChild: !!newBlockRole,
+        controlFlowParentId: parentId ? parentId : undefined,
+      };
+
+      const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
+      const newItems = buildTree(sortedItems);
+      setItems(newItems);
+
+      // rebuild the blocks structure
+      const newBlocks = rebuildBlocksFromTree(newItems);
+      setState({
+        ...state,
+        blocks: newBlocks,
+      });
+    }
   }
 }
 

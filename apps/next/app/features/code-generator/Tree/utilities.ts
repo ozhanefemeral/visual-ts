@@ -40,10 +40,16 @@ export function getProjection(
     depth = minDepth;
   }
 
+  depth = Math.max(0, depth);
+
   return { depth, maxDepth, minDepth, parentId: getParentId() };
 
   function getParentId() {
-    if (depth === 0 || !previousItem) {
+    if (depth === 0) {
+      return null;
+    }
+
+    if (!previousItem) {
       return null;
     }
 
@@ -55,21 +61,27 @@ export function getProjection(
       return previousItem.id;
     }
 
+    // when moving to a shallower depth, find the appropriate parent
     const newParent = newItems
       .slice(0, overItemIndex)
       .reverse()
-      .find((item) => item.depth === depth)?.parentId;
+      .find((item) => item.depth === depth - 1);
 
-    return newParent ?? null;
+    return newParent?.id ?? null;
   }
 }
 
 function getMaxDepth({ previousItem }: { previousItem: FlattenedItem }) {
-  if (previousItem) {
-    return previousItem.depth + 1;
+  if (!previousItem) {
+    return 0;
   }
 
-  return 0;
+  // prevent nesting under function blocks
+  if (previousItem.block.blockType === "functionCall") {
+    return previousItem.depth;
+  }
+
+  return previousItem.depth + 1;
 }
 
 function getMinDepth({ nextItem }: { nextItem: FlattenedItem }) {
@@ -101,15 +113,36 @@ export function flattenTree(items: TreeItems): FlattenedItem[] {
 export function buildTree(flattenedItems: FlattenedItem[]): TreeItems {
   const root: TreeItem = { id: "root", children: [], block: {} as CodeBlock };
   const nodes: Record<string, TreeItem> = { [root.id]: root };
-  const items = flattenedItems.map((item) => ({ ...item, children: [] }));
+  const items = flattenedItems.map((item) => ({
+    ...item,
+    children: [],
+    // preserve control flow metadata
+    isControlFlowChild: item.isControlFlowChild,
+    controlFlowParentId: item.controlFlowParentId,
+    blockRole: item.blockRole,
+  }));
 
   for (const item of items) {
-    const { id, children, block } = item;
+    const {
+      id,
+      children,
+      block,
+      isControlFlowChild,
+      controlFlowParentId,
+      blockRole,
+    } = item;
     const parentId = item.parentId ?? root.id;
 
     // create the node if it doesn't exist
     if (!nodes[id]) {
-      nodes[id] = { id, children: [], block };
+      nodes[id] = {
+        id,
+        children: [],
+        block,
+        isControlFlowChild,
+        controlFlowParentId,
+        blockRole,
+      };
     }
 
     // ensure parent exists
